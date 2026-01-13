@@ -1,7 +1,13 @@
 import colorify from require "text/text_color"
+import pprint from require "lib/pprint"
 local *
 buffer = {}
 backlog = {}
+-- Letter-by-letter rendering state
+text_reveal_progress = 0  -- How many characters have been revealed
+text_reveal_speed = 0.03  -- Time between each character (in seconds)
+text_reveal_timer = nil
+text_fully_revealed = true
 -- lines = 3
 -- if love._console_name == "3DS" then lines = 7
 pad = 10
@@ -35,6 +41,40 @@ on "restore", ->
 	if fast_forward
 		fast_forward\remove!
 		fast_forward = nil
+-- Count total characters in buffer (using string.len for byte-based counting)
+count_buffer_chars = ->
+	total = 0
+	draw_buffer = _.first(buffer, calculate_lines())
+	for line in *draw_buffer
+		-- Each line is a table with alternating colors and text
+		for i = 2, #line, 2
+			total += string.len(line[i])
+	return total
+
+-- Start text reveal animation
+start_text_reveal = ->
+	text_reveal_progress = 0
+	text_fully_revealed = false
+	if text_reveal_timer
+		text_reveal_timer\remove!
+	text_reveal_timer = Timer.every(text_reveal_speed, ->
+		text_reveal_progress += 1
+		total_chars = count_buffer_chars!
+		if text_reveal_progress >= total_chars
+			text_fully_revealed = true
+			if text_reveal_timer
+				text_reveal_timer\remove!
+				text_reveal_timer = nil
+	)
+
+-- Instantly reveal all text
+instant_reveal = ->
+	text_reveal_progress = count_buffer_chars!
+	text_fully_revealed = true
+	if text_reveal_timer
+		text_reveal_timer\remove!
+		text_reveal_timer = nil
+
 done = () -> buffer = _.rest(buffer, calculate_lines() + 1)
 on "text", =>
 	if @text == nil then return
@@ -46,21 +86,44 @@ on "text", =>
 	for line in *add do table.insert(backlog, line)
 	lines = calculate_lines()
 	if #buffer == lines and not no_input
+		-- Buffer is full, replace with new text
 		buffer = add
+		start_text_reveal!
 	else
+		-- Get the character count of existing buffer before adding new text
+		old_chars = count_buffer_chars!
 		buffer = concat(buffer, add)
+		-- Start reveal with old text already revealed
+		text_reveal_progress = old_chars
+		text_fully_revealed = false
+		if text_reveal_timer
+			text_reveal_timer\remove!
+		text_reveal_timer = Timer.every(text_reveal_speed, ->
+			text_reveal_progress += 1
+			total_chars = count_buffer_chars!
+			if text_reveal_progress >= total_chars
+				text_fully_revealed = true
+				if text_reveal_timer
+					text_reveal_timer\remove!
+					text_reveal_timer = nil
+		)
 		if no_input then dispatch "next_ins"
 on "sfx", => table.insert(backlog, @)
 fast_forward = nil
 on "input", =>
 	if @ == "a"
-		if #buffer > calculate_lines() then done!
+		-- If text is still being revealed, instantly reveal it
+		if not text_fully_revealed
+			instant_reveal!
+		else if #buffer > calculate_lines() then done!
 		else dispatch "next_ins"
 	else if @ == "y"
 		if fast_forward then
 			fast_forward\remove!
 			fast_forward = nil
 		else
+			-- When starting fast forward, instantly reveal current text
+			instant_reveal!
 			fast_forward = Timer.every(0.2, ->
 				if #buffer > calculate_lines() then done!
 				else dispatch "next_ins"
@@ -115,9 +178,53 @@ on "draw_text", ->
 		lg.setColor(1, 1, 1)
 		y_pos = y + pad
 		draw_buffer = _.first(buffer, calculate_lines())
+		
+		-- Track characters revealed so far
+		chars_drawn = 0
+		
 		for line in *draw_buffer
-			lg.print(line, 2*pad, y_pos)
+			-- Create a revealed version of the line
+			revealed_line = {}
+			line_finished = false
+			
+			-- Each line is a table with alternating colors (odd indices) and text (even indices)
+			for i = 1, #line
+				if i % 2 == 1
+					-- This is a color table, copy it
+					table.insert(revealed_line, line[i])
+				else
+					-- This is text, only show revealed portion
+					text = line[i]
+					text_len = string.len(text)
+					
+					if text_fully_revealed or chars_drawn + text_len <= text_reveal_progress
+						-- Show entire text segment
+						table.insert(revealed_line, text)
+						chars_drawn += text_len
+					else if chars_drawn < text_reveal_progress
+						-- Show partial text segment
+						chars_to_show = text_reveal_progress - chars_drawn
+						-- Use string.sub for substring
+						partial_text = string.sub(text, 1, chars_to_show)
+						table.insert(revealed_line, partial_text)
+						chars_drawn = text_reveal_progress
+						line_finished = true
+						break
+					else
+						-- No more characters to show
+						line_finished = true
+						break
+			
+			-- Only draw if there's something to show
+			if #revealed_line > 0
+				lg.print(revealed_line, 2*pad, y_pos)
+			
 			y_pos += love.text_font\getHeight! + pad
+			
+			-- Stop if we've shown all revealed characters
+			if line_finished and chars_drawn >= text_reveal_progress
+				break
+		
 		lg.setFont(font)
 word_wrap = (text, max_width) ->
 	-- Come up with a way to handle a single word that is longer than the width

@@ -49,9 +49,9 @@ If you are an experienced developer, try reading through the Dockerfile and the 
 2. After making sure that LuaRocks is on your path (`luarocks --help` has output), run the following:
 
 ```
-luarocks install moonscript
-luarocks install busted
-luarocks install alfons
+luarocks install moonscript --local
+luarocks install busted --local
+luarocks install alfons --local
 ```
 
 3. Clone the repository (`git clone https://github.com/octonezd/VNDS-LOVE-TOUCH`)
