@@ -23,7 +23,7 @@ iOS, iPadOS
 
 # Installation Instructions
 
-Add the AltStore repository for automatic updates: `https://github.com/OctoNezd/VNDS-LOVE-TOUCH/releases/download/latest/altStoreManifest.json`
+Add the AltStore repository to your LiveContainer/SideStore/AltStore for automatic updates: `https://github.com/OctoNezd/VNDS-LOVE-TOUCH/releases/latest/download/altStoreManifest.json`
 
 Install .ipa file from [actions](https://nightly.link/OctoNezd/VNDS-LOVE-TOUCH/workflows/main/main/artifact) using [AltStore](https://faq.altstore.io/altstore-classic/how-to-install-altstore-windows) or jailbreak/trollstore.
 
