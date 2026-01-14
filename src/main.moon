@@ -121,5 +121,6 @@ on "play", -> paused -= 1
 love.update = (dt) ->
 	dispatch_often "update", dt
 	if paused <= 0 then Timer.update(dt)
-
+love.keyreleased = (key) ->
+	dispatch "keyboard_input", key
 is_fullscreen = false
