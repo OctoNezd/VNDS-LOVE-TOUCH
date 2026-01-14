@@ -1,7 +1,5 @@
 require "util"
 pprint = require "lib.pprint"
-fixes = {}
-fixes["Ever 17"] = require "vn_specific.ever17.names"
 local *
 load = (base_dir, fs, data = file: "main.scr", novel_name="") ->
 	s = {:base_dir, :fs, locals: {}, globals: {}, :novel_name}
@@ -27,8 +25,6 @@ read_file = (s, script_file) ->
 	labels = {ins.label, i for i, ins in ipairs ins when ins.type == "label" }
 	{:file, :ins, :labels, n: 1}
 interpolate = (s, text) ->
-	if fixes[s.novel_name] ~= nil then
-		text = fixes[s.novel_name].textPrintReplace(text)
 	for var in text\gmatch("{$([^}]*)}")
 		text = text\gsub("{$"..escape_pattern(var).."}", tostring(mem(s, var)[var]))	
 	for var in text\gmatch("$(%S*)")
