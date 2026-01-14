@@ -1,51 +1,109 @@
+-- ============================================================================
+-- Configuration UI Module
+-- Provides a visual settings interface using the LUIS UI library
+-- ============================================================================
+-- Global state flag
 configui_active = false
--- Initialize LUIS
-local initLuis = require("luis.init")
 
--- Direct this to your widgets folder.
+-- ============================================================================
+-- CONSTANTS
+-- ============================================================================
+
+local FONT_SIZE_LARGE = 46
+local FONT_SIZE_SMALL = 18
+
+local TITLE_FONT_PATH = "Roboto-Italic.ttf"
+local LUIS_FONT_PATH = "luis/themes/fonts/Roboto-Regular.ttf"
+
+-- Layout constants
+local COLORPICKER_Y_POSITION = 12
+local COLORPICKER_HEIGHT = 15
+local COLORPICKER_LABEL_Y_OFFSET = 9
+
+local ALPHA_SLIDER_Y_OFFSET = 9
+local ALPHA_LABEL_Y_OFFSET = 30
+
+local BUTTON_HEIGHT = 4
+local BUTTON_MARGIN_BOTTOM = 5
+
+-- Preview window constants
+local PREVIEW_WIDTH_RATIO = 0.8
+local PREVIEW_HEIGHT_RATIO = 0.2
+local PREVIEW_VERTICAL_OFFSET = 32
+local PREVIEW_SAMPLE_Y_OFFSET = 100
+
+-- Update rate constants
+local TARGET_FPS = 60
+
+-- ============================================================================
+-- LUIS UI LIBRARY INITIALIZATION
+-- ============================================================================
+
+local initLuis = require("luis.init")
 local luis = initLuis("luis/widgets")
 
--- register flux in luis, some widgets need it for animations
+-- Register flux for UI animations
 luis.flux = require("luis.3rdparty.flux")
-luis.theme.text.font = love.graphics.newFont("luis/themes/fonts/Roboto-Regular.ttf", 46)
+luis.theme.text.font = love.graphics.newFont(LUIS_FONT_PATH, FONT_SIZE_LARGE)
 
+-- Create main UI layer
 luis.newLayer("main")
 luis.setCurrentLayer("main")
 
+-- ============================================================================
+-- GRID LAYOUT CALCULATIONS
+-- ============================================================================
+
 local gridWidth = math.floor(luis.baseWidth / luis.gridSize)
 local gridHeight = math.floor(luis.baseHeight / luis.gridSize)
-print("GW", gridWidth, "GH", gridHeight)
-local cpicker_y = 12
-local center = math.floor(gridWidth / 2)
-local picker_width = math.floor(gridWidth / 2)
-local cpicker_pos = center - picker_width / 2 - 180 / gridWidth
+print("Grid dimensions - Width:", gridWidth, "Height:", gridHeight)
 
-local title_theme = {
-    font = love.graphics.newFont("Roboto-Italic.ttf", 46),
+local centerX = math.floor(gridWidth / 2)
+local pickerWidth = math.floor(gridWidth / 2)
+local pickerX = centerX - pickerWidth / 2 - 180 / gridWidth
+
+-- ============================================================================
+-- UI ELEMENTS SETUP
+-- ============================================================================
+
+-- Empty callback for widgets that don't need immediate actions
+local function doNothing()
+end
+
+-- Title
+local titleTheme = {
+    font = love.graphics.newFont(TITLE_FONT_PATH, FONT_SIZE_LARGE),
     color = {1, 1, 1}
 }
-local title = luis.newLabel("Settings", 18, 6, 1, cpicker_pos - 6, "left", title_theme)
+local titleLabel = luis.newLabel("Settings", FONT_SIZE_SMALL, 6, 1, pickerX - 6, "left", titleTheme)
+luis.createElement(luis.currentLayer, "Label", titleLabel)
 
-luis.createElement(luis.currentLayer, "Label", title)
+-- Background Color Picker
+local colorPicker = luis.newColorPicker(pickerWidth, COLORPICKER_HEIGHT, COLORPICKER_Y_POSITION, pickerX, doNothing)
+local colorPickerLabel = luis.newLabel("Background color", FONT_SIZE_SMALL, 1, COLORPICKER_LABEL_Y_OFFSET, pickerX)
 
-local function nop()
-end
-local cpicker = luis.newColorPicker(picker_width, 15, cpicker_y, cpicker_pos, nop)
-local cpicker_label = luis.newLabel("Background color", 18, 1, 9, cpicker_pos)
+luis.createElement(luis.currentLayer, "ColorPicker", colorPicker)
+luis.createElement(luis.currentLayer, "Label", colorPickerLabel)
 
-local calpha = luis.newSlider(0, 1, .8, picker_width + 9, 1, nop, 32, cpicker_pos)
-local calpha_label = luis.newLabel("Background opacity", 32, 1, 30, cpicker_pos)
+-- Background Opacity Slider
+local opacitySlider = luis.newSlider(0, -- min value
+1, -- max value
+0.8, -- default value
+pickerWidth + ALPHA_SLIDER_Y_OFFSET, 1, doNothing, ALPHA_LABEL_Y_OFFSET + 2, pickerX)
+local opacityLabel = luis.newLabel("Background opacity", ALPHA_LABEL_Y_OFFSET + 2, 1, ALPHA_LABEL_Y_OFFSET, pickerX)
 
-luis.createElement(luis.currentLayer, "ColorPicker", cpicker)
-luis.createElement(luis.currentLayer, "Label", cpicker_label)
-luis.createElement(luis.currentLayer, "Slider", calpha)
-luis.createElement(luis.currentLayer, "Label", calpha_label)
+luis.createElement(luis.currentLayer, "Slider", opacitySlider)
+luis.createElement(luis.currentLayer, "Label", opacityLabel)
 
-local button_width = gridWidth / 4
-local apply = luis.newButton("Apply", button_width, 4, function()
+-- ============================================================================
+-- BUTTON ACTIONS
+-- ============================================================================
+
+local function applySettings()
     configui_active = false
-    local red, green, blue = unpack(cpicker.color)
-    local new_config = {
+
+    local red, green, blue = unpack(colorPicker.color)
+    local newConfig = {
         audio = {
             music = 100,
             sound = 100
@@ -57,71 +115,119 @@ local apply = luis.newButton("Apply", button_width, 4, function()
             red = red,
             green = green,
             blue = blue,
-            alpha = calpha.value
+            alpha = opacitySlider.value
         }
     }
-    dispatch("config", new_config)
-    dispatch("save_config", new_config)
-end, function()
-end, gridHeight - 5, gridWidth / 4 - button_width / 2)
-luis.createElement(luis.currentLayer, "Button", apply)
 
-local cancel = luis.newButton("Cancel", button_width, 4, function()
-end, function()
+    dispatch("config", newConfig)
+    dispatch("save_config", newConfig)
+end
+
+local function cancelSettings()
     configui_active = false
-end, gridHeight - 5, gridWidth - gridWidth / 4 - button_width / 2)
-luis.createElement(luis.currentLayer, "Button", cancel)
+end
 
-local function refresh_dialog_preview()
-    local x = love.graphics.getWidth() / 2 - preview_width / 2
-    local y = apply.position.y * luis.scale - preview_height - 32
-    love.graphics.draw(background_sample, background_sample_quad, x, y)
-    local red, green, blue = unpack(cpicker.color)
-    local alpha = calpha.value
+-- ============================================================================
+-- BUTTONS
+-- ============================================================================
+
+local buttonWidth = gridWidth / 4
+
+-- Apply Button
+local applyButton = luis.newButton("Apply", buttonWidth, BUTTON_HEIGHT, applySettings, doNothing,
+    gridHeight - BUTTON_MARGIN_BOTTOM, gridWidth / 4 - buttonWidth / 2)
+luis.createElement(luis.currentLayer, "Button", applyButton)
+
+-- Cancel Button
+local cancelButton = luis.newButton("Cancel", buttonWidth, BUTTON_HEIGHT, doNothing, cancelSettings,
+    gridHeight - BUTTON_MARGIN_BOTTOM, gridWidth - gridWidth / 4 - buttonWidth / 2)
+luis.createElement(luis.currentLayer, "Button", cancelButton)
+
+-- ============================================================================
+-- DIALOG PREVIEW RENDERING
+-- ============================================================================
+
+local function renderDialogPreview()
+    -- Calculate preview window position
+    local previewX = love.graphics.getWidth() / 2 - preview_width / 2
+    local previewY = applyButton.position.y * luis.scale - preview_height - PREVIEW_VERTICAL_OFFSET
+
+    -- Draw background sample image
+    love.graphics.draw(background_sample, background_sample_quad, previewX, previewY)
+
+    -- Draw colored overlay with current settings
+    local red, green, blue = unpack(colorPicker.color)
+    local alpha = opacitySlider.value
     love.graphics.setColor(red, green, blue, alpha)
-    love.graphics.rectangle("fill", x + pad, y + pad, preview_width - pad * 2, preview_height - pad * 2)
-    local w, h = love.graphics.getWidth() - 2 * pad, pad + (love.text_font:getHeight() + pad)
+    love.graphics.rectangle("fill", previewX + pad, previewY + pad, preview_width - pad * 2, preview_height - pad * 2)
+
+    -- Draw sample text
     love.graphics.setColor(1, 1, 1)
     love.graphics.setFont(love.text_font)
-    love.graphics.print("Yes, it’s puzzling.", x + pad * 2, y + pad * 2)
+    love.graphics.print("Yes, it's puzzling.", previewX + pad * 2, previewY + pad * 2)
 end
+
+-- ============================================================================
+-- EVENT HANDLERS
+-- ============================================================================
 
 on("load", function()
     background_sample = love.graphics.newImage("dialog_preview.png")
 end)
+
 on("config", function(config)
-    cpicker.color = {config.background.red, config.background.green, config.background.blue, config.background.alpha}
-    calpha.value = config.background.alpha
+    -- Update UI elements with loaded configuration
+    colorPicker.color =
+        {config.background.red, config.background.green, config.background.blue, config.background.alpha}
+    opacitySlider.value = config.background.alpha
 end)
+
 on("start_cfgui", function()
     configui_active = true
 end)
+
 on("draw_configui", function()
     luis.draw()
-    refresh_dialog_preview()
+    renderDialogPreview()
 end)
+
 on("configui_mr", function(x, y, button, istouch)
     luis.mousereleased(x, y, button, istouch)
 end)
+
 on("configui_mp", function(x, y, button, istouch)
     luis.mousepressed(x, y, button, istouch)
 end)
 
-local time = 0
+-- ============================================================================
+-- UPDATE LOOP
+-- ============================================================================
+
+local accumulatedTime = 0
+
 on("update", function(dt)
-    preview_width = love.graphics.getWidth() * 0.8
-    preview_height = love.graphics.getHeight() * 0.2
-    local background_sample_pos = background_sample:getWidth() / 2 - preview_width / 2
-    background_sample_quad = love.graphics.newQuad(background_sample_pos, 100, preview_width, preview_height,
-        background_sample)
+    -- Update preview dimensions based on window size
+    preview_width = love.graphics.getWidth() * PREVIEW_WIDTH_RATIO
+    preview_height = love.graphics.getHeight() * PREVIEW_HEIGHT_RATIO
+
+    -- Calculate quad for background sample
+    local sampleXOffset = background_sample:getWidth() / 2 - preview_width / 2
+    background_sample_quad = love.graphics.newQuad(sampleXOffset, PREVIEW_SAMPLE_Y_OFFSET, preview_width,
+        preview_height, background_sample)
+
+    -- Update UI scale
     luis.updateScale()
+
+    -- Only update if config UI is active
     if not configui_active then
         return
     end
-    time = time + dt
-    if time >= 1 / 60 then
-        luis.flux.update(time)
-        time = 0
+
+    -- Update animations at target framerate
+    accumulatedTime = accumulatedTime + dt
+    if accumulatedTime >= 1 / TARGET_FPS then
+        luis.flux.update(accumulatedTime)
+        accumulatedTime = 0
     end
 
     luis.update(dt)
