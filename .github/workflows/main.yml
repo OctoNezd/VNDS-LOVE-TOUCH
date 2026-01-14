@@ -47,7 +47,7 @@ jobs:
             - name: Build VNDS
               working-directory: ./VNDS-LOVE
               run: |
-                  alfons build
+                  make build
             - name: Build ipa
               working-directory: ./love/platform/xcode
               run: |
