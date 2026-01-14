@@ -45,7 +45,7 @@ clear = =>
 exists = => @\sub(-1) != "~"
 on "sound", =>
 	clear sound
-	if exists(@path) and @n != 0
+	if exists(@path)
 		file = load_source(@path)
 		if file == nil then return
 		file = with file
