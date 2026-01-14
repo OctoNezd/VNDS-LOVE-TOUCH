@@ -10,7 +10,6 @@ text_reveal_timer = nil
 text_fully_revealed = true
 -- lines = 3
 -- if love._console_name == "3DS" then lines = 7
-pad = 10
 getHeight = -> 
 	SAFE_X, SAFE_Y, SAFE_WIDTH, SAFE_HEIGHT = love.window.getSafeArea()
 	return SAFE_HEIGHT
@@ -31,8 +30,16 @@ update_font = ->
 		font_path = interpreter.base_dir.."default.ttf"
 		if lfs.getInfo(font_path) then love.text_font = lg.newFont(font_path, 32)
 	else love.text_font = font
+bg_color_red = 0
+bg_color_blue = 0
+bg_color_green = 0
+bg_color_alpha = .8
 on "config", =>
 	override_font = @font.override_font
+	bg_color_red = @background.red
+	bg_color_green = @background.green
+	bg_color_blue = @background.blue
+	bg_color_alpha = @background.alpha
 	update_font!
 on "restore", ->
 	update_font!
@@ -173,7 +180,7 @@ on "draw_text", ->
 		lg.setFont(love.text_font)
 		w, h = lg.getWidth! - 2*pad, pad + (love.text_font\getHeight! + pad) * calculate_lines()
 		x, y = pad, getHeight! - h - pad
-		lg.setColor(.18,.204,.251, .8)
+		lg.setColor(bg_color_red, bg_color_green, bg_color_blue, bg_color_alpha)
 		lg.rectangle("fill", x, y, w, h)
 		lg.setColor(1, 1, 1)
 		y_pos = y + pad

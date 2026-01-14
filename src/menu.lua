@@ -22,7 +22,7 @@ on("input", function(input)
 		elseif res == 3 then
 			dispatch("load_slot", interpreter.base_dir)
 		elseif res == 4 then
-			dispatch("config_menu")
+			dispatch("start_cfgui")
 		elseif res == 5 then
 			love.event.quit("restart")
 		else

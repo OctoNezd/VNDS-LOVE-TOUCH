@@ -10,13 +10,17 @@ on("load", function()
 end)
 
 function love.draw()
-    dispatch_often("draw_background")
-    dispatch_often("draw_foreground")
-    dispatch_often("draw_text")
-    dispatch_often("draw_mainmenu_button")
-    dispatch_often("draw_ui")
-    dispatch_often("draw_debug")
-    dispatch_often("draw_choice")
+    if configui_active then
+        dispatch_often("draw_configui")
+    else
+        dispatch_often("draw_background")
+        dispatch_often("draw_foreground")
+        dispatch_often("draw_text")
+        dispatch_often("draw_mainmenu_button")
+        dispatch_often("draw_ui")
+        dispatch_often("draw_debug")
+        dispatch_often("draw_choice")
+    end
 end
 
 local menu_fnt = love.graphics.getFont()
@@ -57,10 +61,17 @@ SCROLLED = false
 SCROLL_MIN = 0
 SCROLL_MAX = 0
 function love.mousepressed(x, y, button, istouch)
+    if configui_active then 
+        dispatch("configui_mp", x, y, button, istouch)
+        return
+    end
     SCROLL_ACTIVE = true
 end
 
 function love.mousemoved(x, y, dx, dy)
+    if configui_active then
+        return
+    end
     if SCROLL_ACTIVE and not SCROLL_LOCKED then
         local tmp = SCROLL_OFFSET + dy
         if tmp < SCROLL_MIN then
@@ -75,6 +86,10 @@ function love.mousemoved(x, y, dx, dy)
 end
 
 function love.mousereleased(x, y, button, istouch)
+    if configui_active then
+        dispatch("configui_mr", x, y, button, istouch)
+        return
+    end
     SCROLL_ACTIVE = false
     if x >= MENU_BUTTON_START_X and y > MENU_BUTTON_START_Y then
         dispatch("input", "start")

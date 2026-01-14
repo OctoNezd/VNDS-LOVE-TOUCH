@@ -58,11 +58,11 @@ luarocks install alfons --local
 4. `cd` to the cloned directory (`cd VNDS-LOVE-TOUCH`)
 5. Install [development version of Love2D](https://github.com/love2d/love/actions) and make sure it is also on your path.
 
-Run `alfons compile` to compile the moonscript source to lua.
+Run `make compile` to compile the moonscript source to lua.
 
-Run `alfons run` to run VNDS-LOVE using the installed copy of `love`.
+Run `make run` to run VNDS-LOVE using the installed copy of `love`.
 
-Run `alfons test` to run the busted unit tests, which are located in `spec`
+Run `make test` to run the busted unit tests, which are located in `spec`
 
 ## Building
 
@@ -77,7 +77,7 @@ With that out of the way:
 
 1. Try running `luarocks install --server=http://luarocks.org/dev love-release`
 2. Install `libzip-dev` on your OS if the above command fails.
-3. Run `alfons build`, and the build files should appear in a `build` folder, including a `.love` file.
+3. Run `make build`, and the build files should appear in a `build` folder, including a `.love` file.
 
 ### Building for iOS
 

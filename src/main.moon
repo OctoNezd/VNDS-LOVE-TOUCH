@@ -2,6 +2,8 @@ export *
 import dispatch, dispatch_often, on, remove, register from require 'event'
 import create_listbox, onload from require "mouseui"
 love.graphics.setDefaultFilter("linear", "linear")
+pad = 10
+
 script = require "script"
 pprint = require "lib/pprint"
 Timer = require 'lib/timer'
@@ -23,6 +25,7 @@ require "save"
 require "input"
 require "menu"
 require "config"
+require "config_ui"
 mount = require 'mount'
 parse_info = require "parse_info"
 os.setlocale("", "time") --Needed for the correct time
