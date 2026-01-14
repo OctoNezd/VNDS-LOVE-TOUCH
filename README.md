@@ -23,7 +23,7 @@ iOS, iPadOS
 
 # Installation Instructions
 
-Add the AltStore repository to your LiveContainer/SideStore/AltStore for automatic updates: `https://github.com/OctoNezd/VNDS-LOVE-TOUCH/releases/latest/download/altStoreManifest.json`
+Add the AltStore repository to your LiveContainer/SideStore/AltStore for automatic updates: `http://octonezd.me/octo-ios-repo/merged_altstore.json`
 
 Install .ipa file from [actions](https://nightly.link/OctoNezd/VNDS-LOVE-TOUCH/workflows/main/main/artifact) using [AltStore](https://faq.altstore.io/altstore-classic/how-to-install-altstore-windows) or jailbreak/trollstore.
 
@@ -51,7 +51,6 @@ If you are an experienced developer, try reading through the Dockerfile and the 
 ```
 luarocks install moonscript --local
 luarocks install busted --local
-luarocks install alfons --local
 ```
 
 3. Clone the repository (`git clone https://github.com/octonezd/VNDS-LOVE-TOUCH`)
