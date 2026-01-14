@@ -3,6 +3,7 @@ local *
 media = 0
 on "resize", -> media = font\getHeight! * 3
 on "save_slot", ->
+	if interpreter == nil return
 	base_dir = interpreter.base_dir
 	write_slot = =>
 		save_table = {interpreter: script.save(interpreter)}
