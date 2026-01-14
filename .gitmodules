@@ -1,0 +1,3 @@
+[submodule "src/luis"]
+	path = src/luis
+	url = https://github.com/SiENcE/luis.git
