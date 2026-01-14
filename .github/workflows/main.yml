@@ -19,6 +19,8 @@ jobs:
             - uses: actions/checkout@v4
               with:
                   path: VNDS-LOVE
+                  submodules: true
+            - run: ls -laR
             - uses: actions/checkout@v4
               with:
                   repository: love2d/love
