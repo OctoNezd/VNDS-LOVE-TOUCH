@@ -250,6 +250,17 @@ local function renderDialogPreview()
 
     -- Draw sample text
     love.graphics.setColor(1, 1, 1)
+    local fonts = {}
+    love.text_font = lg.newFont(32)
+    if customFontCheckbox.value then
+        table.insert(fonts, "/documents/custom.ttf")
+        table.insert(fonts, "/documents/custom.otf")
+    end
+    for _, font in pairs(fonts) do
+        if (love.filesystem.exists(font)) then
+            love.text_font = lg.newFont(font, 32)
+        end
+    end
     love.graphics.setFont(love.text_font)
     love.graphics.print("Yes, it's puzzling.", previewX + pad * 2, previewY + pad * 2)
 end
@@ -269,8 +280,8 @@ on("config", function(config)
     opacitySlider.value = config.background.alpha
     musicVolumeSlider.value = config.audio.music
     sfxVolumeSlider.value = config.audio.sound
-    customFontCheckbox.value = config.font.custom_font
-    noVnFontCheckbox.value = config.font.override_font
+    customFontCheckbox:setValue(config.font.custom_font)
+    noVnFontCheckbox:setValue(config.font.override_font)
 
 end)
 
