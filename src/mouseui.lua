@@ -7,6 +7,7 @@
 -- Safe Area and Window Configuration
 -- ============================================================================
 SAFE_X, SAFE_Y, SAFE_WIDTH, SAFE_HEIGHT = love.window.getSafeArea()
+ui_debug = false
 
 on("load", function()
     -- Initialize window with default desktop size
@@ -29,18 +30,23 @@ end)
 -- ============================================================================
 
 function love.draw()
+    if ui_debug then
+        love.graphics.print("Current FPS: " .. tostring(love.timer.getFPS()), 10, 10)
+    end
     if configui_active then
         dispatch_often("draw_configui")
+    elseif gridui_active then
+        dispatch_often("draw_gridui")
     else
         -- Draw game elements in order from back to front
         dispatch_often("draw_background")
         dispatch_often("draw_foreground")
         dispatch_often("draw_text")
-        dispatch_often("draw_mainmenu_button")
         dispatch_often("draw_ui")
         dispatch_often("draw_debug")
         dispatch_often("draw_choice")
     end
+    dispatch_often("draw_mainmenu_button")
 end
 
 -- ============================================================================
@@ -98,13 +104,13 @@ end)
 -- ============================================================================
 
 -- Scroll state variables
-SCROLL_OFFSET = 0
-OLD_SCROLL_OFFSET = 0
-SCROLL_ACTIVE = false
-SCROLL_LOCKED = false
-SCROLLED = false
-SCROLL_MIN = 0
-SCROLL_MAX = 0
+local SCROLL_OFFSET = 0
+local OLD_SCROLL_OFFSET = 0
+local SCROLL_ACTIVE = false
+local SCROLL_LOCKED = false
+local SCROLLED = false
+local SCROLL_MIN = 0
+local SCROLL_MAX = 0
 
 -- ============================================================================
 -- Mouse/Touch Input Handlers
@@ -113,7 +119,11 @@ SCROLL_MAX = 0
 function love.mousepressed(x, y, button, istouch)
     -- Delegate to config UI if active
     if configui_active then
-        dispatch("configui_mp", x, y, button, istouch)
+        dispatch_often("configui_mp", x, y, button, istouch)
+        return
+    end
+    if gridui_active then
+        dispatch_often("gridui_mp", x, y, button, istouch)
         return
     end
 
@@ -126,7 +136,10 @@ function love.mousemoved(x, y, dx, dy)
     if configui_active then
         return
     end
-
+    if gridui_active then
+        dispatch_often("gridui_mm", x, y, dx, dy)
+        return
+    end
     -- Handle scrolling if active and not locked
     if SCROLL_ACTIVE and not SCROLL_LOCKED then
         local new_offset = SCROLL_OFFSET + dy
@@ -145,19 +158,21 @@ function love.mousemoved(x, y, dx, dy)
 end
 
 function love.mousereleased(x, y, button, istouch)
-    -- Delegate to config UI if active
-    if configui_active then
-        dispatch("configui_mr", x, y, button, istouch)
-        return
-    end
-
-    SCROLL_ACTIVE = false
-
     -- Check if menu button was clicked
     if x >= MENU_BUTTON_START_X and y > MENU_BUTTON_START_Y then
         dispatch("input", "start")
         return
     end
+    -- Delegate to config UI if active
+    if configui_active then
+        dispatch_often("configui_mr", x, y, button, istouch)
+        return
+    end
+    if gridui_active then
+        dispatch_often("gridui_mr", x, y, button, istouch)
+        return
+    end
+    SCROLL_ACTIVE = false
 
     -- Only trigger click if no scrolling occurred
     if not SCROLLED then

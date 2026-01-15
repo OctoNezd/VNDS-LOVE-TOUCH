@@ -28,6 +28,8 @@ require "config"
 require "config_ui"
 mount = require 'mount'
 parse_info = require "parse_info"
+create_grid_ui = require "gridui"
+print(create_grid_ui)
 os.setlocale("", "time") --Needed for the correct time
 lfs.setIdentity("VNDS-LOVE")
 sx, sy = 0,0
@@ -73,7 +75,7 @@ love.load = ->
 	root_path = "/documents/"
 	novels = lfs.getDirectoryItems(root_path)
 	opts = {}
-	media = font\getHeight! * 3
+	item_height = font\getHeight! * 3
 	for i,novel in ipairs novels
 		continue if string.find(novel, "^%.") ~= nil
 		base_dir = root_path..novel.."/"
@@ -81,16 +83,23 @@ love.load = ->
 		if lfs.getInfo(base_dir, "file") then continue
 		icons = {"icon-high.png", "icon-high.jpg", "icon.png", "icon.jpg"}
 		thumbnails = {"thumbnail-high.png", "thumbnail-high.jpg", "thumbnail.png", "thumbnail.jpg"}
-		preview = nil
+		media = nil
+		media_height = nil
+		media_width = nil
 		for icon in *icons
 			if lfs.getInfo(base_dir..icon)
-				img = lg.newImage(base_dir..icon)
-				preview = img
+				media = love.graphics.newImage(base_dir..icon)
+				media_height = media\getHeight()
+				media_width = media\getWidth()
 				break
-		path = "~"
-		for thumb in *thumbnails
-			if lfs.getInfo(base_dir..thumb)
-				path = base_dir..thumb
+		thumb = nil
+		thumb_height = nil
+		thumb_width = nil
+		for thumb_path in *thumbnails
+			if lfs.getInfo(base_dir..thumb_path)
+				thumb = love.graphics.newImage(base_dir..thumb_path)
+				thumb_height = thumb\getHeight()
+				thumb_width = thumb\getWidth()
 				break
 		if lfs.getInfo(base_dir .. "info.txt") ~= nil
 		    info = parse_info(base_dir.."info.txt")
@@ -98,8 +107,12 @@ love.load = ->
 				novel_name = info["title"]
 		table.insert(opts, {
 			text: novel_name
-			media: preview
-			onchange: () -> dispatch "bgload", {:path}
+			media: media
+			media_height: media_height
+			media_width: media_width
+			thumb: thumb
+			thumb_height: thumb_height
+			thumb_width: thumb_width
 			action: () ->
 				files = lfs.getDirectoryItems(base_dir)
 				dispatch "load_slot", base_dir, false, novel_name
@@ -112,7 +125,7 @@ love.load = ->
 		on "input", -> 
 			love.system.openURL("https://vndb.org/v?q=&sb=Search%21&ch=&f=4ovnd&s=26w")
 			return false
-	else create_listbox(choices: opts, :media)
+	else create_grid_ui(opts, item_height)
 
 
 paused = 0

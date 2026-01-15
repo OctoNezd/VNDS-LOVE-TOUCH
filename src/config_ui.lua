@@ -162,8 +162,6 @@ luis.createElement(LYR_SOUNDS, "Label", sfxVolumeLabel)
 -- ============================================================================
 
 local function applySettings()
-    configui_active = false
-
     local red, green, blue = unpack(colorPicker.color)
     local newConfig = {
         audio = {
@@ -184,6 +182,9 @@ local function applySettings()
 
     dispatch("config", newConfig)
     dispatch("save_config", newConfig)
+    Timer.after(0.1, function()
+        configui_active = false
+    end)
 end
 
 local function cancelSettings()
