@@ -2,8 +2,8 @@ LIP = require "lib/LIP"
 local *
 config = {
 	audio: {music: 100, sound: 100}
-	font: {override_font: false},
-	background: {red: 1, green: 1, blue: 1, alpha: .8}
+	font: {override_font: false, custom_font: false},
+	background: {red: 0, green: 0, blue: 0, alpha: .8}
 }
 on "config_menu", ->
 	copy = deepcopy(config)

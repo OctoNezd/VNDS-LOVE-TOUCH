@@ -25,17 +25,34 @@ getSafeY = ->
 calculate_lines = ->
 	return math.floor(getHeight() / (love.text_font\getHeight() + pad))
 override_font = nil
+custom_font = nil
 update_font = ->
+	fonts = {}
 	if interpreter and not override_font
 		font_path = interpreter.base_dir.."default.ttf"
-		if lfs.getInfo(font_path) then love.text_font = lg.newFont(font_path, 32)
-	else love.text_font = font
+		font_path_otf = interpreter.base_dir.."default.otf"		
+		table.insert(fonts, font_path)
+		table.insert(fonts, font_path_otf)
+	if custom_font
+		table.insert(fonts, "/documents/custom.ttf")
+		table.insert(fonts, "/documents/custom.otf")
+	for _, font in pairs(fonts)
+		print("Checking font", font)
+		if (love.filesystem.exists(font))
+			love.text_font = lg.newFont(font, 32)
+			return
+	love.text_font = love.graphics.newFont(32)
+	-- if interpreter and not override_font
+	-- 	font_path = interpreter.base_dir.."default.ttf"
+	-- 	if lfs.getInfo(font_path) then love.text_font = lg.newFont(font_path, 32)
+	-- else love.text_font = font
 bg_color_red = 0
 bg_color_blue = 0
 bg_color_green = 0
 bg_color_alpha = .8
 on "config", =>
 	override_font = @font.override_font
+	custom_font = @font.custom_font
 	bg_color_red = @background.red
 	bg_color_green = @background.green
 	bg_color_blue = @background.blue

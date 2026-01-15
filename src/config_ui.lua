@@ -4,7 +4,7 @@
 -- ============================================================================
 -- Global state flag
 configui_active = false
-
+luis_debug = false
 -- ============================================================================
 -- CONSTANTS
 -- ============================================================================
@@ -63,8 +63,9 @@ local gridHeight = math.floor(luis.baseHeight / luis.gridSize)
 print("Grid dimensions - Width:", gridWidth, "Height:", gridHeight)
 
 local centerX = math.floor(gridWidth / 2)
-local pickerWidth = math.floor(gridWidth / 2)
-local pickerX = centerX - pickerWidth / 2 - 180 / gridWidth
+local pickerWidth = math.floor(gridWidth / 4)
+local leftColumnX = centerX - pickerWidth - 2
+local rightColumnX = centerX + 10
 
 -- ============================================================================
 -- UI ELEMENTS SETUP
@@ -74,18 +75,24 @@ local pickerX = centerX - pickerWidth / 2 - 180 / gridWidth
 local function doNothing()
 end
 
--- Title
+-- Main Title
 local titleTheme = {
     font = love.graphics.newFont(TITLE_FONT_PATH, FONT_SIZE_LARGE),
     color = {1, 1, 1}
 }
-local titleLabel = luis.newLabel("Settings", FONT_SIZE_SMALL, 6, 1, pickerX - 6, "left", titleTheme)
+local titleLabel = luis.newLabel("Settings", FONT_SIZE_SMALL, 6, 1, leftColumnX - 6, "left", titleTheme)
 luis.createElement(LYR_BG, "Label", titleLabel)
 luis.createElement(LYR_SOUNDS, "Label", titleLabel)
 
+-- ============================================================================
+-- LEFT COLUMN: BACKGROUND SETTINGS
+-- ============================================================================
+
+-- Background Section Header
+
 -- Background Color Picker
-local colorPicker = luis.newColorPicker(pickerWidth, COLORPICKER_HEIGHT, COLORPICKER_Y_POSITION, pickerX, doNothing)
-local colorPickerLabel = luis.newLabel("Background color", FONT_SIZE_SMALL, 1, COLORPICKER_LABEL_Y_OFFSET, pickerX)
+local colorPicker = luis.newColorPicker(pickerWidth, COLORPICKER_HEIGHT, COLORPICKER_Y_POSITION, leftColumnX, doNothing)
+local colorPickerLabel = luis.newLabel("Color", FONT_SIZE_SMALL, 1, COLORPICKER_LABEL_Y_OFFSET, leftColumnX)
 
 luis.createElement(LYR_BG, "ColorPicker", colorPicker)
 luis.createElement(LYR_BG, "Label", colorPickerLabel)
@@ -94,11 +101,36 @@ luis.createElement(LYR_BG, "Label", colorPickerLabel)
 local opacitySlider = luis.newSlider(0, -- min value
 1, -- max value
 0.8, -- default value
-pickerWidth + ALPHA_SLIDER_Y_OFFSET, 1, doNothing, ALPHA_LABEL_Y_OFFSET + 2, pickerX)
-local opacityLabel = luis.newLabel("Background opacity", ALPHA_LABEL_Y_OFFSET + 2, 1, ALPHA_LABEL_Y_OFFSET, pickerX)
+pickerWidth + ALPHA_SLIDER_Y_OFFSET, 1, doNothing, ALPHA_LABEL_Y_OFFSET + 2, leftColumnX)
+local opacityLabel = luis.newLabel("Opacity", ALPHA_LABEL_Y_OFFSET + 2, 1, ALPHA_LABEL_Y_OFFSET, leftColumnX)
 
 luis.createElement(LYR_BG, "Slider", opacitySlider)
 luis.createElement(LYR_BG, "Label", opacityLabel)
+
+-- ============================================================================
+-- RIGHT COLUMN: FONT SETTINGS
+-- ============================================================================
+
+-- Custom Font Checkbox
+local customFontCheckbox = luis.newCheckBox(false, 3, doNothing, COLORPICKER_LABEL_Y_OFFSET - 1, rightColumnX)
+local customFontLabel = luis.newLabel("Use custom font", FONT_SIZE_SMALL, 3, COLORPICKER_LABEL_Y_OFFSET - 1,
+    rightColumnX + 4)
+local customFontLabelHint = luis.newLabel("(custom.ttf in app folder)", FONT_SIZE_SMALL + 30, 2,
+    COLORPICKER_LABEL_Y_OFFSET + 2, rightColumnX + 4, "left", {
+        font = love.graphics.newFont(32, "normal"),
+        color = {1, 1, 1}
+    })
+
+luis.createElement(LYR_BG, "CheckBox", customFontCheckbox)
+luis.createElement(LYR_BG, "Label", customFontLabel)
+luis.createElement(LYR_BG, "Label", customFontLabelHint)
+
+local noVnFontCheckbox = luis.newCheckBox(false, 3, doNothing, COLORPICKER_LABEL_Y_OFFSET + 5, rightColumnX)
+local noVnFontLabel = luis.newLabel("Don't use VN font", FONT_SIZE_SMALL, 3, COLORPICKER_LABEL_Y_OFFSET + 5,
+    rightColumnX + 4)
+
+luis.createElement(LYR_BG, "CheckBox", noVnFontCheckbox)
+luis.createElement(LYR_BG, "Label", noVnFontLabel)
 
 -- ============================================================================
 -- SOUND SLIDERS
@@ -108,8 +140,9 @@ luis.createElement(LYR_BG, "Label", opacityLabel)
 local musicVolumeSlider = luis.newSlider(0, -- min value
 100, -- max value
 100, -- default value
-pickerWidth + ALPHA_SLIDER_Y_OFFSET, 1, doNothing, COLORPICKER_Y_POSITION, pickerX)
-local musicVolumeLabel = luis.newLabel("Music volume", ALPHA_LABEL_Y_OFFSET + 2, 1, COLORPICKER_LABEL_Y_OFFSET, pickerX)
+pickerWidth + ALPHA_SLIDER_Y_OFFSET, 1, doNothing, COLORPICKER_Y_POSITION, leftColumnX)
+local musicVolumeLabel = luis.newLabel("Music volume", ALPHA_LABEL_Y_OFFSET + 2, 1, COLORPICKER_LABEL_Y_OFFSET,
+    leftColumnX)
 
 luis.createElement(LYR_SOUNDS, "Slider", musicVolumeSlider)
 luis.createElement(LYR_SOUNDS, "Label", musicVolumeLabel)
@@ -118,8 +151,8 @@ luis.createElement(LYR_SOUNDS, "Label", musicVolumeLabel)
 local sfxVolumeSlider = luis.newSlider(0, -- min value
 100, -- max value
 100, -- default value
-pickerWidth + ALPHA_SLIDER_Y_OFFSET, 1, doNothing, ALPHA_LABEL_Y_OFFSET + 2, pickerX)
-local sfxVolumeLabel = luis.newLabel("SFX volume", ALPHA_LABEL_Y_OFFSET + 2, 1, ALPHA_LABEL_Y_OFFSET, pickerX)
+pickerWidth + ALPHA_SLIDER_Y_OFFSET, 1, doNothing, ALPHA_LABEL_Y_OFFSET + 2, leftColumnX)
+local sfxVolumeLabel = luis.newLabel("SFX volume", ALPHA_LABEL_Y_OFFSET + 2, 1, ALPHA_LABEL_Y_OFFSET, leftColumnX)
 
 luis.createElement(LYR_SOUNDS, "Slider", sfxVolumeSlider)
 luis.createElement(LYR_SOUNDS, "Label", sfxVolumeLabel)
@@ -138,7 +171,8 @@ local function applySettings()
             sound = math.floor(sfxVolumeSlider.value)
         },
         font = {
-            override_font = false
+            custom_font = customFontCheckbox.value,
+            override_font = noVnFontCheckbox.value
         },
         background = {
             red = red,
@@ -186,7 +220,7 @@ local TAB_THEME = {
     elevationPressed = 12,
     transitionDuration = 0.25
 }
-local switchBgLyr = luis.newButton(" Background", buttonWidth, BUTTON_HEIGHT, doNothing, function()
+local switchBgLyr = luis.newButton(" UI", buttonWidth, BUTTON_HEIGHT, doNothing, function()
     luis.setCurrentLayer(LYR_BG)
 end, 2, TAB_BASE, TAB_THEME)
 luis.createElement(LYR_BG, "Button", switchBgLyr)
@@ -235,6 +269,9 @@ on("config", function(config)
     opacitySlider.value = config.background.alpha
     musicVolumeSlider.value = config.audio.music
     sfxVolumeSlider.value = config.audio.sound
+    customFontCheckbox.value = config.font.custom_font
+    noVnFontCheckbox.value = config.font.override_font
+
 end)
 
 on("start_cfgui", function()
@@ -288,4 +325,9 @@ on("update", function(dt)
     end
 
     luis.update(dt)
+end)
+on("luis_debug", function()
+    luis.showGrid = not luis.showGrid
+    luis.showLayerNames = not luis.showLayerNames
+    luis.showElementOutlines = not luis.showElementOutlines
 end)

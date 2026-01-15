@@ -17,6 +17,7 @@ keyboard_map = {
 
 on "keyboard_input", =>
 	if @ == "c" then dispatch "start_cfgui"
+	if @ == "d" then dispatch "luis_debug"
 	if keyboard_map[@] then dispatch "input", keyboard_map[@]
 
 gamepad_map = {
