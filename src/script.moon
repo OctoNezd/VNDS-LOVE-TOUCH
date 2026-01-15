@@ -18,6 +18,7 @@ read_file = (s, script_file) ->
 	scriptpath = "#{s.base_dir}script/#{file}"
 	data = s.fs(scriptpath)
 	if data == nil then error("Cannot read #{scriptpath}! Please check the scripts folder/zip")
+	data = utf8_clean(data)  -- Strip non-UTF-8 characters
 	ins = {}
 	for line in string.gmatch(data, "[^\n]+")
 		if line != '' and line\sub(1,1) != "#"

@@ -17,6 +17,57 @@ ascii = (str) ->
 		if byte >= 32 and byte <= 126 then
 			s[#s+1] = string.char(byte)
 	return table.concat(s)
+
+utf8_clean = (str) ->
+	-- Strip invalid UTF-8 sequences from string
+	s = {}
+	i = 1
+	len = str\len!
+	while i <= len
+		byte = str\byte(i)
+		char_len = 1
+		valid = false
+		
+		-- Check UTF-8 byte sequences
+		if byte < 0x80 then
+			-- Single byte character (ASCII)
+			char_len = 1
+			valid = true
+		elseif byte >= 0xC2 and byte <= 0xDF then
+			-- 2-byte sequence
+			if i + 1 <= len
+				byte2 = str\byte(i + 1)
+				if byte2 >= 0x80 and byte2 <= 0xBF
+					char_len = 2
+					valid = true
+		elseif byte >= 0xE0 and byte <= 0xEF then
+			-- 3-byte sequence
+			if i + 2 <= len
+				byte2 = str\byte(i + 1)
+				byte3 = str\byte(i + 2)
+				if byte2 >= 0x80 and byte2 <= 0xBF and byte3 >= 0x80 and byte3 <= 0xBF
+					char_len = 3
+					valid = true
+		elseif byte >= 0xF0 and byte <= 0xF4 then
+			-- 4-byte sequence
+			if i + 3 <= len
+				byte2 = str\byte(i + 1)
+				byte3 = str\byte(i + 2)
+				byte4 = str\byte(i + 3)
+				if byte2 >= 0x80 and byte2 <= 0xBF and byte3 >= 0x80 and byte3 <= 0xBF and byte4 >= 0x80 and byte4 <= 0xBF
+					char_len = 4
+					valid = true
+		
+		-- Add valid character to output
+		if valid
+			s[#s+1] = str\sub(i, i + char_len - 1)
+			i += char_len
+		else
+			-- Skip invalid byte
+			i += 1
+	
+	return table.concat(s)
+
 get = (t, ...) ->
 	for _, k in ipairs{...} do
 		t = t[k]
