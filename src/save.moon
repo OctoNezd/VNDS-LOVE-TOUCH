@@ -1,4 +1,6 @@
 json = require "lib.json"
+create_grid_ui = require "gridui"
+
 local *
 media = 0
 on "resize", -> media = font\getHeight! * 3
@@ -36,7 +38,7 @@ preview_slot = (i, fn, save, info) ->
 		img = lg.newImage(save.background.path)
 		
 	return {
-		text: "Save #{i}\n#{os.date("%x %H:%M")}"
+		text: "Save #{i} #{os.date("%x %H:%M")}"
 		media: img
 		data: {:save, :fn, :i}
 	}
@@ -57,4 +59,7 @@ slot_ui = (base_dir, existing_slot, new_slot, closable = true) ->
 				action: new_slot
 				data: {:fn, :i}
 			})
-	create_listbox({:choices, :closable, :media})
+	-- HACK
+	Timer.after(0.1, () ->
+		create_grid_ui(choices, font\getHeight! * 3)
+    )

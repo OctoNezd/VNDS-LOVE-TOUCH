@@ -42,12 +42,11 @@ local function create_gridui(items, MEDIA_HEIGHT)
                 width = item_width,
                 height = MEDIA_HEIGHT + TEXT_HEIGHT
             }
-            love.graphics.rectangle("line", item_x, item_y, item_width, MEDIA_HEIGHT + TEXT_HEIGHT)
             -- Draw thumb property fitted inside the rectangle
             if item.thumb ~= nil then
                 local image = item.thumb
-                local thumb_width = item.thumb_width
-                local thumb_height = item.thumb_height
+                local thumb_width = image:getWidth()
+                local thumb_height = image:getHeight()
                 local scale_x = item_width / thumb_width
                 local scale_y = MEDIA_HEIGHT / thumb_height
                 local scale = math.min(scale_x, scale_y)
@@ -55,13 +54,13 @@ local function create_gridui(items, MEDIA_HEIGHT)
                 local draw_height = thumb_height * scale
                 local offset_x = (item_width - draw_width) / 2
                 local offset_y = (MEDIA_HEIGHT - draw_height) / 2
-                love.graphics.draw(image, item_x + offset_x, item_y + offset_y, 0, scale, scale)
+                love.graphics.draw(image, item_x + offset_x, item_y + offset_y + 3, 0, scale, scale)
             end
             -- Draw media property on top of thumb, fitted inside the rectangle
             if item.media ~= nil then
                 local image = item.media
-                local media_width = item.media_width
-                local media_height = item.media_height
+                local media_width = image:getWidth()
+                local media_height = image:getHeight()
                 local scale = 1
                 if media_height > MEDIA_HEIGHT or media_width > media_width then
                     local scale_x = item_width / media_width
@@ -75,6 +74,7 @@ local function create_gridui(items, MEDIA_HEIGHT)
                 love.graphics.draw(image, item_x + offset_x, item_y + offset_y, 0, scale, scale)
             end
             love.graphics.print(item.text, item_x, item_y + MEDIA_HEIGHT)
+            love.graphics.rectangle("line", item_x, item_y, item_width, MEDIA_HEIGHT + TEXT_HEIGHT)
         end
     end)
     mousePressedEvt = on("gridui_mp", function(x, y, button, istouch)

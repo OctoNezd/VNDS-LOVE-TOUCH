@@ -89,8 +89,6 @@ love.load = ->
 		for icon in *icons
 			if lfs.getInfo(base_dir..icon)
 				media = love.graphics.newImage(base_dir..icon)
-				media_height = media\getHeight()
-				media_width = media\getWidth()
 				break
 		thumb = nil
 		thumb_height = nil
@@ -98,8 +96,6 @@ love.load = ->
 		for thumb_path in *thumbnails
 			if lfs.getInfo(base_dir..thumb_path)
 				thumb = love.graphics.newImage(base_dir..thumb_path)
-				thumb_height = thumb\getHeight()
-				thumb_width = thumb\getWidth()
 				break
 		if lfs.getInfo(base_dir .. "info.txt") ~= nil
 		    info = parse_info(base_dir.."info.txt")
@@ -108,11 +104,7 @@ love.load = ->
 		table.insert(opts, {
 			text: novel_name
 			media: media
-			media_height: media_height
-			media_width: media_width
 			thumb: thumb
-			thumb_height: thumb_height
-			thumb_width: thumb_width
 			action: () ->
 				files = lfs.getDirectoryItems(base_dir)
 				dispatch "load_slot", base_dir, false, novel_name
