@@ -1,0 +1,8 @@
+label start
+
+text hey!
+text text text text
+cleartext
+text your screen should be clear now
+
+jump main.scr start

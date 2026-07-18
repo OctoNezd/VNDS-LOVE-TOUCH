@@ -10,9 +10,7 @@ Timer = require 'lib/timer'
 profile = require 'lib/profile'
 profile.setclock(love.timer.getTime)
 lfs = love.filesystem
-lfs.mountCommonPath("userdocuments", "/documents", "readwrite")
--- apple moment
-print(lfs.write("/documents/.dummy.txt", "dummy file to make ios show up the app folder"))
+
 lg = love.graphics
 interpreter = nil
 -- require "lovelog"
@@ -58,22 +56,42 @@ next_msg = (ins) ->
 			return next_msg!
 	switch ins.type
 		when "text"
-			if ins.text == "~" then next_msg!
-			else dispatch "text", ins
+			pprint(ins)
+			if ins.text == "~" then 
+				ins.text = ""
+				dispatch "text", ins
+				dispatch "next_ins"
+			elseif ins.text == "!" then
+				ins.text = ""
+				dispatch "text", ins
+			else
+				dispatch "text", ins
 		when "choice"
 			dispatch "choice", ins
 		when "delay"
 			Timer.after(ins.frames/60, -> next_msg!)
-		--when "cleartext"
+		when "cleartext"
+			dispatch("cleartext")
 		else
 			dispatch ins.type, ins
 			next_msg!
 on "next_ins", next_msg
-love.load = ->
+love.load = (arg) ->
+	pprint(arg)
+	root_path = "/documents/"
+	if arg[1] == "nomount" then 
+		print("custom directory arg is set") 
+		root_path = "/work_around_symlink_bug/sample_vns/"
+	else 
+		print("no arg, using userdocuments")
+		lfs.mountCommonPath("userdocuments", root_path, "readwrite")
+		-- apple moment
+		print(lfs.write(root_path .. ".dummy.txt", "dummy file to make ios show up the app folder"))
 	love.resize(lg.getWidth!, lg.getHeight!)
 	dispatch "load"
-	root_path = "/documents/"
+	print(root_path)
 	novels = lfs.getDirectoryItems(root_path)
+	pprint(novels)
 	opts = {}
 	item_height = font\getHeight! * 3
 	for i,novel in ipairs novels

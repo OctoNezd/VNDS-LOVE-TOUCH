@@ -21,7 +21,7 @@ icons:
 
 # Clean build artifacts
 clean:
-	rm -rf vnds/
+	rm -rf vnds/ VNDS-LOVE/
 
 # Compile MoonScript to Lua
 compile: clean
@@ -29,13 +29,17 @@ compile: clean
 	@echo "Compiling MoonScript files..."
 	@find vnds/ -name "*.moon" -type f | while read file; do \
 		echo "$$file"; \
-		moonc "$$file"; \
+		moonc "$$file" || exit 1; \
 		rm "$$file"; \
 	done
 
+# i dont want to pollute my documents folder
+sampleprep:
+	ln -s $(PWD) ~/Library/Application\ Support/LOVE/VNDS-LOVE/work_around_symlink_bug
+
 # Run the game
 run: compile
-	love vnds
+	love vnds nomount
 
 # Run tests
 test:
@@ -43,4 +47,5 @@ test:
 
 # Build release binaries
 build: compile
-	love-release -W -M --uti 'me.octonezd.vnds' build vnds/
+	mkdir -p VNDS-LOVE/build
+	cd vnds;zip -r ../VNDS-LOVE/build/vnds.love  .

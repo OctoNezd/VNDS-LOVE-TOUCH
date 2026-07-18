@@ -1,0 +1,10 @@
+label start
+
+text hey!
+text ~
+text Newline should appear and this instantly after it.
+text !
+text Newline should appear and this text AFTER click
+cleartext
+
+jump main.scr start

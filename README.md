@@ -50,7 +50,6 @@ If you are an experienced developer, try reading through the Dockerfile and the 
 
 ```
 luarocks install moonscript --local
-luarocks install busted --local
 ```
 
 3. Clone the repository (`git clone https://github.com/octonezd/VNDS-LOVE-TOUCH`)

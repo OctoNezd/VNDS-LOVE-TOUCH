@@ -50,6 +50,9 @@ bg_color_red = 0
 bg_color_blue = 0
 bg_color_green = 0
 bg_color_alpha = .8
+on "cleartext", =>
+	buffer = {}
+	dispatch "next_ins"
 on "config", =>
 	override_font = @font.override_font
 	custom_font = @font.custom_font
@@ -105,7 +108,6 @@ on "text", =>
 	if @text\sub(1, 1) == "@"
 		@text = @text\sub(2, -1)
 		no_input = true
-	if @text == '' or @text == '!' then return
 	add = word_wrap(@text, getWidth! - 2*pad)
 	for line in *add do table.insert(backlog, line)
 	lines = calculate_lines()
@@ -241,7 +243,7 @@ on "draw_text", ->
 			
 			-- Only draw if there's something to show
 			if #revealed_line > 0
-				lg.print(revealed_line, 2*pad, y_pos)
+				if revealed_line[2] != '' then lg.print(revealed_line, 2*pad, y_pos)
 			
 			y_pos += love.text_font\getHeight! + pad
 			
