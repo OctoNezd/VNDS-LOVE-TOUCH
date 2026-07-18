@@ -86,7 +86,8 @@ love.load = (arg) ->
 		print("no arg, using userdocuments")
 		lfs.mountCommonPath("userdocuments", root_path, "readwrite")
 		-- apple moment
-		print(lfs.write(root_path .. ".dummy.txt", "dummy file to make ios show up the app folder"))
+		dummy_contents = lfs.read("dummy.txt")
+		print(lfs.write(root_path .. "IOS-FILES-DUMDUM.TXT", dummy_contents))
 	love.resize(lg.getWidth!, lg.getHeight!)
 	dispatch "load"
 	print(root_path)

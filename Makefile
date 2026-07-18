@@ -41,6 +41,9 @@ sampleprep:
 run: compile
 	love vnds nomount
 
+run-doc: compile
+	love vnds
+
 # Run tests
 test:
 	cd src && busted -C . ../spec

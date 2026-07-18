@@ -18,7 +18,7 @@ jobs:
               run: brew install luarocks zip libzip
             - uses: actions/checkout@v4
               with:
-                  path: VNDS-LOVE
+                  path: .
                   submodules: true
             - run: ls -laR
             - uses: actions/checkout@v4
@@ -37,14 +37,14 @@ jobs:
                   cp -rv iOS/libraries ../love/platform/xcode/ios 
                   cp -rv shared ../love/platform/xcode
                   cd ..
-                  cp -rv VNDS-LOVE/xcode/vnds.xcodeproj love/platform/xcode/
-                  cp -v VNDS-LOVE/xcode/love-ios.plist love/platform/xcode/ios
-                  cp -rv VNDS-LOVE/xcode/Images.xcassets love/platform/xcode/
+                  cp -rv xcode/vnds.xcodeproj love/platform/xcode/
+                  cp -v xcode/love-ios.plist love/platform/xcode/ios
+                  cp -rv xcode/Images.xcassets love/platform/xcode/
             - name: Install VNDS dependencies
               run: |
                   luarocks install moonscript
             - name: Build VNDS
-              working-directory: ./VNDS-LOVE
+              working-directory: .
               run: |
                   make build
             - name: Build ipa
