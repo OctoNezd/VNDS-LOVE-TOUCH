@@ -51,18 +51,29 @@ function love.resize(w, h)
     sx, sy = w / original_width, h / original_height
     px, py = w / 256, h / 192 -- resolution of the DS
     local font_size = 32 -- fix the font scaling to work based on resolution
-    if w < 600 then font_size = 20 end
+    if w < 600 then
+        font_size = 20
+    end
     font = lg.newFont(font_size)
     lg.setFont(font)
-    if love.text_font == nil then love.text_font = font end
-    dispatch("resize", {sx = sx, sy = sy, px = px, py = py})
+    if love.text_font == nil then
+        love.text_font = font
+    end
+    dispatch("resize", {
+        sx = sx,
+        sy = sy,
+        px = px,
+        py = py
+    })
 end
 
 local function next_msg(ins)
     if ins == nil then
         interpreter, ins = script.next_instruction(interpreter)
     end
-    if ins == nil then return end -- novel finished
+    if ins == nil then
+        return
+    end -- novel finished
     if ins.path then -- verify path exists before trying to run an instruction
         if ins.path:sub(-1) ~= "~" and not lfs.getInfo(ins.path) then
             return next_msg()
@@ -82,7 +93,9 @@ local function next_msg(ins)
     elseif ins.type == "choice" then
         dispatch("choice", ins)
     elseif ins.type == "delay" then
-        Timer.after(ins.frames / 60, function() next_msg() end)
+        Timer.after(ins.frames / 60, function()
+            next_msg()
+        end)
     elseif ins.type == "cleartext" then
         dispatch("cleartext")
     else
@@ -116,7 +129,10 @@ function love.load(arg)
 
     -- Parse command line arguments for game directory and save slot
     -- Usage: love . [game_directory] [save_slot]
-    local known_args = {nomount = true, swiftheart = true}
+    local known_args = {
+        nomount = true,
+        swiftheart = true
+    }
     local game_arg = nil
     local save_slot_arg = nil
     for _, a in ipairs(arg) do
@@ -133,7 +149,9 @@ function love.load(arg)
     if game_arg then
         local base_dir = root_path .. game_arg .. "/"
         if not lfs.getInfo(base_dir, "directory") then
-            dispatch("text", {text = "Game not found: " .. game_arg})
+            dispatch("text", {
+                text = "Game not found: " .. game_arg
+            })
             return
         end
         mount(base_dir)
@@ -155,7 +173,9 @@ function love.load(arg)
             end
         end
         -- Start new game (no valid save slot specified or save not found)
-        interpreter = script.load(base_dir, lfs.read, {file = "main.scr"}, novel_name)
+        interpreter = script.load(base_dir, lfs.read, {
+            file = "main.scr"
+        }, novel_name)
         dispatch("restore", {})
         dispatch("next_ins")
         return
@@ -166,10 +186,14 @@ function love.load(arg)
     local opts = {}
     local item_height = font:getHeight() * 3
     for i, novel in ipairs(novels) do
-        if string.find(novel, "^%.") ~= nil then goto continue end
+        if string.find(novel, "^%.") ~= nil then
+            goto continue
+        end
         local base_dir = root_path .. novel .. "/"
         local novel_name = novel
-        if lfs.getInfo(base_dir, "file") then goto continue end
+        if lfs.getInfo(base_dir, "file") then
+            goto continue
+        end
         local icons = {"icon-high.png", "icon-high.jpg", "icon.png", "icon.jpg"}
         local thumbnails = {"thumbnail-high.png", "thumbnail-high.jpg", "thumbnail.png", "thumbnail.jpg"}
         local media = nil
@@ -199,15 +223,21 @@ function love.load(arg)
             action = function()
                 local files = lfs.getDirectoryItems(base_dir)
                 dispatch("load_slot", base_dir, false, novel_name)
-            end,
+            end
         })
         mount(base_dir)
         ::continue::
     end
     if next(opts) == nil then
-        dispatch("text", {text = "No novels!"})
-        dispatch("text", {text = "Add one to Files/VNDS and restart the program."})
-        dispatch("text", {text = "Looking for visual novels to read? Click anywhere on this screen to open VNDB search"})
+        dispatch("text", {
+            text = "No novels!"
+        })
+        dispatch("text", {
+            text = "Add one to Files/VNDS and restart the program."
+        })
+        dispatch("text", {
+            text = "Looking for visual novels to read? Click anywhere on this screen to open VNDB search"
+        })
         on("input", function()
             love.system.openURL("https://vndb.org/v?q=&sb=Search%21&ch=&f=4ovnd&s=26w")
             return false
@@ -218,12 +248,22 @@ function love.load(arg)
 end
 
 local paused = 0
-on("pause", function() paused = paused + 1 end)
-on("play", function() paused = paused - 1 end)
+on("pause", function()
+    paused = paused + 1
+end)
+on("play", function()
+    paused = paused - 1
+end)
 
 function love.update(dt)
+    if menu_pending then
+        menu_pending = false
+        dispatch("menu")
+    end
     dispatch_often("update", dt)
-    if paused <= 0 then Timer.update(dt) end
+    if paused <= 0 then
+        Timer.update(dt)
+    end
 end
 
 function love.keyreleased(key)
