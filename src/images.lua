@@ -1,4 +1,4 @@
-local Timer = require 'lib/timer'
+local Timer = require 'lib.timer'
 
 local background = {}
 local images = {}

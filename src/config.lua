@@ -1,4 +1,4 @@
-local LIP = require "lib/LIP"
+local LIP = require "lib.LIP"
 
 local config = {
     audio = {music = 100, sound = 100},

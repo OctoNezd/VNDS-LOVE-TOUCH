@@ -69,7 +69,7 @@ MENU_BUTTON_END_Y = 0
 -- Text rendering setup for menu button
 local menu_font = love.graphics.getFont()
 menu_font:setLineHeight(0.5)
-local menu_text = love.graphics.newText(menu_font)
+local menu_text = love.graphics.newTextBatch(menu_font)
 
 on("draw_mainmenu_button", function()
     local screen_width = love.graphics.getWidth()
@@ -241,7 +241,7 @@ local SCROLL_BOTTOM_PADDING = 200
 local function create_listbox(self)
     local window_width = SAFE_WIDTH
     local font = love.graphics.getFont()
-    local text = love.graphics.newText(font)
+    local text = love.graphics.newTextBatch(font)
     local draw_event, input_event
 
     -- Initialize selected choice

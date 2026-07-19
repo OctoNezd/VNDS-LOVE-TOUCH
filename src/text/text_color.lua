@@ -1,4 +1,4 @@
-local pprint = require "lib/pprint"
+local pprint = require "lib.pprint"
 
 local function rgb(r, g, b)
     return {r / 256, g / 256, b / 256, 1}

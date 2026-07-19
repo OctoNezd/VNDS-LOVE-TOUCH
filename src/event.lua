@@ -1,4 +1,4 @@
-local Event = require 'lib/event'
+local Event = require 'lib.event'
 
 local function dispatch(name, ...)
     Event.dispatch("event", name, ...)

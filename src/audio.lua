@@ -1,4 +1,4 @@
-local puremagic = require "lib/puremagic"
+local puremagic = require "lib.puremagic"
 
 local sound = {}
 local music = {}

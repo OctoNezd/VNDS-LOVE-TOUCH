@@ -1,4 +1,4 @@
-local pprint = require "lib/pprint"
+local pprint = require "lib.pprint"
 _G.love = {
     filesystem = {
         getDirectoryItems = function() return {"main.scr"} end,

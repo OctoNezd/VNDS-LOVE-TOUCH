@@ -30,7 +30,7 @@ local LIP = {};
 --@return The table containing all data from the INI file. [table]
 function LIP.load(fileName)
 	assert(type(fileName) == 'string', 'Parameter "fileName" must be a string.');
-	local lovefile = love.filesystem.newFile(fileName)
+	local lovefile = love.filesystem.openFile(fileName, 'r')
 	if love.filesystem.getInfo(fileName) == nil then
 		return {}
 	end
@@ -68,8 +68,7 @@ end
 function LIP.save(fileName, data)
 	assert(type(fileName) == 'string', 'Parameter "fileName" must be a string.');
 	assert(type(data) == 'table', 'Parameter "data" must be a table.');
-	local lovefile = love.filesystem.newFile(fileName)
-	local file = assert(lovefile:open('w'), 'Error loading file :' .. fileName);
+	local lovefile = love.filesystem.openFile(fileName, 'w')
 	local contents = '';
 	for section, param in pairs(data) do
 		contents = contents .. ('[%s]\r\n'):format(section);

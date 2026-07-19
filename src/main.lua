@@ -12,9 +12,9 @@ love.graphics.setDefaultFilter("linear", "linear")
 pad = 10
 
 script = require "script"
-pprint = require "lib/pprint"
-Timer = require 'lib/timer'
-local profile = require 'lib/profile'
+pprint = require "lib.pprint"
+Timer = require 'lib.timer'
+local profile = require 'lib.profile'
 profile.setclock(love.timer.getTime)
 lfs = love.filesystem
 
@@ -24,7 +24,7 @@ interpreter = nil
 require "audio"
 require "debugging"
 require "images"
-require "text/text"
+require "text.text"
 require "choose"
 require "save"
 require "input"
@@ -49,8 +49,8 @@ function love.resize(w, h)
     px, py = w / 256, h / 192 -- resolution of the DS
     local font_size = 32 -- fix the font scaling to work based on resolution
     if w < 600 then font_size = 20 end
-    lg.setNewFont(font_size)
-    font = lg.getFont()
+    font = lg.newFont(font_size)
+    lg.setFont(font)
     if love.text_font == nil then love.text_font = font end
     dispatch("resize", {sx = sx, sy = sy, px = px, py = py})
 end
