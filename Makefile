@@ -8,7 +8,7 @@ help:
 	@echo "Available targets:"
 	@echo "  icons    - Generate icon files from SVG"
 	@echo "  clean    - Remove the vnds/ directory"
-	@echo "  compile  - Compile MoonScript files to Lua"
+	@echo "  compile  - Copy src/ to vnds/ (no MoonScript compilation needed)"
 	@echo "  run      - Compile and run the game with love"
 	@echo "  test     - Run busted unit tests"
 	@echo "  build    - Build release binaries"
@@ -23,15 +23,9 @@ icons:
 clean:
 	rm -rf vnds/ VNDS-LOVE/
 
-# Compile MoonScript to Lua
+# Copy src to vnds/ (all files are now plain Lua)
 compile: clean
 	cp -r src/ vnds/
-	@echo "Compiling MoonScript files..."
-	@find vnds/ -name "*.moon" -type f | while read file; do \
-		echo "$$file"; \
-		moonc "$$file" || exit 1; \
-		rm "$$file"; \
-	done
 
 # i dont want to pollute my documents folder
 sampleprep:

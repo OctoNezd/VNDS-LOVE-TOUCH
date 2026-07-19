@@ -1,4 +1,5 @@
 FILECACHE = nil
+local pprint = require "lib/pprint"
 local script_folder_name = "script"
 local function populate_filecache(base_dir, location)
     local root = base_dir .. script_folder_name .. location
