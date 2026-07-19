@@ -59,7 +59,7 @@
 /* Begin PBXFileReference section */
 		05560893300D183A000AC2D0 /* SwiftHeart.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwiftHeart.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		05SH0002300D0001000AC2D0 /* LoveViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = LoveViewController.mm; path = SwiftHeart/LoveViewController.mm; sourceTree = "<group>"; };
-		05SH0011300D0001000AC2D0 /* SDL3.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = SDL3.xcframework; path = "../love/platform/xcode/shared/Frameworks/SDL3.xcframework"; sourceTree = SOURCE_ROOT; };
+		05SH0011300D0001000AC2D0 /* SDL3.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = SDL3.xcframework; path = ../love/platform/xcode/shared/Frameworks/SDL3.xcframework; sourceTree = SOURCE_ROOT; };
 		05SH0012300D0001000AC2D0 /* OpenAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenAL.framework; path = System/Library/Frameworks/OpenAL.framework; sourceTree = SDKROOT; };
 		05SH0013300D0001000AC2D0 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		05SH0014300D0001000AC2D0 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
@@ -72,7 +72,7 @@
 		05SH001B300D0001000AC2D0 /* GameController.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameController.framework; path = System/Library/Frameworks/GameController.framework; sourceTree = SDKROOT; };
 		05SH001D300D0001000AC2D0 /* libbz2.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libbz2.tbd; path = usr/lib/libbz2.tbd; sourceTree = SDKROOT; };
 		05SH001F300D0001000AC2D0 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
-		05SH0021300D0001000AC2D0 /* liblove.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = liblove.xcodeproj; path = "../love/platform/xcode/liblove.xcodeproj"; sourceTree = SOURCE_ROOT; };
+		05SH0021300D0001000AC2D0 /* liblove.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = liblove.xcodeproj; path = ../love/platform/xcode/liblove.xcodeproj; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */

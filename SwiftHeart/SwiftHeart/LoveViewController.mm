@@ -17,8 +17,22 @@
 //  UIKit events via its own CADisplayLink).  When the game exits we call
 //  the onQuit block which SwiftUI uses to pop the game view.
 //
+//  Native iOS dialog bridge
+//  ────────────────────────
+//  Because Love runs on the main thread we cannot simply dispatch_async a
+//  UIAlertController and wait on a semaphore (the main thread would be
+//  blocked and UIKit would never deliver the tap).  Instead we use the same
+//  technique SDL itself uses for showMessageBox on iOS: present the alert,
+//  then spin a nested CFRunLoop until the user makes a choice.  UIKit
+//  continues to process touch events inside the nested run loop, so the
+//  alert is fully interactive.
+//
 
 #import "LoveViewController.h"
+
+// C functions implemented in SlotBridge.swift via @_silgen_name.
+extern "C" void    swiftheart_request_slot(const char *dirPath, bool isSave);
+extern "C" bool    swiftheart_poll_slot_result(int32_t *outSlot);
 
 #include "common/version.h"
 #include "common/runtime.h"
@@ -39,6 +53,205 @@ extern "C" {
 
 #include <string>
 #include <vector>
+
+// ---------------------------------------------------------------------------
+// Native iOS dialog helpers
+// ---------------------------------------------------------------------------
+
+/// Present a UIAlertController on the main thread and block (via a nested
+/// CFRunLoop) until the user dismisses it.  Returns the index of the tapped
+/// action (0-based), or -1 if the alert was cancelled / dismissed without a
+/// choice.
+///
+/// @param title        Alert title.
+/// @param message      Alert message (may be nil).
+/// @param actions      Array of NSString button titles.
+/// @param cancelTitle  Title of the cancel button (nil = no cancel button).
+/// @param destructiveIndex  Index in @a actions that should be styled
+///                          destructively, or -1 for none.
+static NSInteger showNativeAlert(NSString *title,
+                                 NSString * _Nullable message,
+                                 NSArray<NSString *> *actions,
+                                 NSString * _Nullable cancelTitle,
+                                 NSInteger destructiveIndex)
+{
+    // This function must only be called from the main thread (Love runs on the
+    // main thread, so this is always satisfied in normal operation).
+    assert([NSThread isMainThread] && "showNativeAlert must be called on the main thread");
+
+    __block NSInteger result = -1;
+    __block BOOL done = NO;
+
+    UIAlertController *alert =
+        [UIAlertController alertControllerWithTitle:title
+                                            message:message
+                                     preferredStyle:UIAlertControllerStyleActionSheet];
+
+    // Regular action buttons
+    for (NSUInteger i = 0; i < actions.count; i++) {
+        UIAlertActionStyle style = (NSInteger)i == destructiveIndex
+            ? UIAlertActionStyleDestructive
+            : UIAlertActionStyleDefault;
+        NSUInteger captured_i = i;
+        UIAlertAction *action =
+            [UIAlertAction actionWithTitle:actions[i]
+                                     style:style
+                                   handler:^(UIAlertAction *) {
+                result = (NSInteger)captured_i;
+                done = YES;
+            }];
+        [alert addAction:action];
+    }
+
+    // Optional cancel button
+    if (cancelTitle) {
+        UIAlertAction *cancel =
+            [UIAlertAction actionWithTitle:cancelTitle
+                                     style:UIAlertActionStyleCancel
+                                   handler:^(UIAlertAction *) {
+                result = -1;
+                done = YES;
+            }];
+        [alert addAction:cancel];
+    }
+
+    // On iPad, UIAlertControllerStyleActionSheet requires a source view/bar
+    // button item.  Point it at the centre of the key window.
+    UIWindow *keyWindow = nil;
+    for (UIScene *scene in UIApplication.sharedApplication.connectedScenes) {
+        if ([scene isKindOfClass:[UIWindowScene class]]) {
+            UIWindowScene *ws = (UIWindowScene *)scene;
+            for (UIWindow *w in ws.windows) {
+                if (w.isKeyWindow) { keyWindow = w; break; }
+            }
+        }
+        if (keyWindow) break;
+    }
+    if (keyWindow) {
+        alert.popoverPresentationController.sourceView = keyWindow;
+        alert.popoverPresentationController.sourceRect =
+            CGRectMake(CGRectGetMidX(keyWindow.bounds),
+                       CGRectGetMidY(keyWindow.bounds), 1, 1);
+        alert.popoverPresentationController.permittedArrowDirections = 0;
+    }
+
+    // Find the topmost presented view controller to present from.
+    UIViewController *presenter = keyWindow.rootViewController;
+    while (presenter.presentedViewController)
+        presenter = presenter.presentedViewController;
+
+    [presenter presentViewController:alert animated:YES completion:nil];
+
+    // Spin a nested run loop until the user taps a button.
+    // UIKit continues to deliver touch events inside this loop.
+    while (!done) {
+        CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0.05, YES);
+    }
+
+    return result;
+}
+
+// ---------------------------------------------------------------------------
+// Lua "swiftheart" module
+// ---------------------------------------------------------------------------
+//
+// Exposed to Lua as the global table `swiftheart` (registered during Love
+// boot via luaopen_swiftheart).
+//
+// API
+// ───
+//   swiftheart.showSaveDialog(dirPath, mode)
+//
+//     dirPath – absolute filesystem path to the game directory
+//     mode    – "save" or "load"
+//
+//     Presents the native SwiftUI slot-picker sheet (non-blocking).
+//     Poll swiftheart.pollSlotResult() each frame until it returns non-nil.
+//
+//   swiftheart.pollSlotResult() -> number | false | nil
+//
+//     Returns the chosen 1-based slot number when the user has picked,
+//     false if the user cancelled, or nil if the sheet is still open.
+//
+//   swiftheart.showPauseMenu() -> string | nil
+//
+//     Shows the pause menu (blocking UIAlertController).  Returns one of:
+//       "continue", "save", "load", "settings", "mainmenu"
+//     or nil if dismissed without a choice.
+
+static int l_showSaveDialog(lua_State *L)
+{
+    // Arg 1: directory path string (absolute filesystem path to the game dir)
+    const char *dir_cstr = luaL_checkstring(L, 1);
+    // Arg 2: mode string ("save" or "load")
+    const char *mode_cstr = luaL_optstring(L, 2, "save");
+
+    bool isSave = strcmp(mode_cstr, "save") == 0;
+
+    // Present the SwiftUI sheet (non-blocking).
+    swiftheart_request_slot(dir_cstr, isSave);
+    return 0;
+}
+
+// swiftheart.pollSlotResult() -> number (slot) | false (cancelled) | nil (pending)
+static int l_pollSlotResult(lua_State *L)
+{
+    int32_t chosen = 0;
+    if (!swiftheart_poll_slot_result(&chosen)) {
+        // Sheet still open
+        lua_pushnil(L);
+        return 1;
+    }
+    if (chosen <= 0) {
+        // Cancelled
+        lua_pushboolean(L, 0);
+    } else {
+        lua_pushinteger(L, (lua_Integer)chosen);
+    }
+    return 1;
+}
+
+static int l_showPauseMenu(lua_State *L)
+{
+    NSArray<NSString *> *actions = @[
+        @"Continue",
+        @"Save",
+        @"Load",
+        @"Settings",
+        @"Main Menu"
+    ];
+
+    NSInteger chosen = showNativeAlert(@"Pause", nil, actions, nil, 4 /* Main Menu = destructive */);
+
+    if (chosen < 0) {
+        lua_pushnil(L);
+        return 1;
+    }
+
+    // Map index → string token
+    static const char *tokens[] = {
+        "continue", "save", "load", "settings", "mainmenu"
+    };
+    if (chosen >= 0 && chosen < 5) {
+        lua_pushstring(L, tokens[chosen]);
+    } else {
+        lua_pushnil(L);
+    }
+    return 1;
+}
+
+static const luaL_Reg swiftheart_funcs[] = {
+    { "showSaveDialog",  l_showSaveDialog  },
+    { "pollSlotResult",  l_pollSlotResult  },
+    { "showPauseMenu",   l_showPauseMenu   },
+    { nullptr, nullptr }
+};
+
+static int luaopen_swiftheart(lua_State *L)
+{
+    luaL_newlib(L, swiftheart_funcs);
+    return 1;
+}
 
 // ---------------------------------------------------------------------------
 // Love2D boot loop
@@ -68,6 +281,9 @@ static DoneAction runlove(int argc, char **argv, int &retval,
     lua_call(L, 1, 0);
 
     love_preload(L, luaopen_love, "love");
+
+    // Register the swiftheart native module so Lua can require("swiftheart")
+    love_preload(L, luaopen_swiftheart, "swiftheart");
 
     {
         lua_newtable(L);

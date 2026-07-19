@@ -27,6 +27,49 @@ local function preview_slot(i, fn, save, info)
     }
 end
 
+-- ---------------------------------------------------------------------------
+-- Native iOS save/load dialog (SwiftHeart only)
+-- ---------------------------------------------------------------------------
+-- Presents the SwiftUI slot-picker sheet (non-blocking) and calls `callback`
+-- with the chosen slot number (1-based) or nil when the user cancels.
+-- While the sheet is open the game loop continues running normally.
+
+local function native_slot_ui(base_dir, mode, callback)
+    local swiftheart = require("swiftheart")
+
+    -- Convert the Love virtual path (/documents/GameName/) to a real
+    -- filesystem path using the same substitution as mount.lua.
+    -- getFullCommonPath("userdocuments") returns the real Documents path,
+    -- possibly with a trailing slash — strip it first to avoid double slashes.
+    local docs_real = love.filesystem.getFullCommonPath("userdocuments"):gsub("/$", "")
+    local real_dir = base_dir:gsub("/documents", docs_real)
+    -- Normalise double slashes and strip any trailing slash.
+    real_dir = real_dir:gsub("//", "/"):gsub("/$", "")
+
+    -- Present the sheet (returns immediately).
+    swiftheart.showSaveDialog(real_dir, mode)
+
+    -- Poll each frame until the user makes a choice.
+    local poll_evt
+    poll_evt = on("update", function()
+        local result = swiftheart.pollSlotResult()
+        if result == nil then
+            return -- still open, keep polling
+        end
+        poll_evt:remove()
+        -- result is a slot number (integer) or false (cancelled)
+        if result == false then
+            callback(nil)
+        else
+            callback(result)
+        end
+    end)
+end
+
+-- ---------------------------------------------------------------------------
+-- Love grid-based slot UI (non-SwiftHeart)
+-- ---------------------------------------------------------------------------
+
 local function slot_ui(base_dir, existing_slot, new_slot, closable)
     if closable == nil then
         closable = true
@@ -58,15 +101,45 @@ local function slot_ui(base_dir, existing_slot, new_slot, closable)
     end)
 end
 
+-- ---------------------------------------------------------------------------
+-- Save event
+-- ---------------------------------------------------------------------------
+
 on("save_slot", function()
     if interpreter == nil then
         return
     end
     local base_dir = interpreter.base_dir
+
+    if is_swiftheart then
+        -- Native iOS dialog: present sheet, then write when user picks a slot.
+        native_slot_ui(base_dir, "save", function(chosen)
+            if chosen == nil then
+                return
+            end -- user cancelled
+            local fn = base_dir .. "save" .. chosen .. ".json"
+            local save_table = {
+                interpreter = script.save(interpreter),
+                last_line = table.concat(lastlines, ' '),
+                timestamp = os.time()
+            }
+            dispatch_often("save", save_table)
+            if before_menu_screenshot ~= nil then
+                before_menu_screenshot:encode("png", fn .. ".png")
+            else
+                print("WARN: before_menu_screenshot is nil. This shouldnt happen.")
+            end
+            print("write res:", love.filesystem.write(fn, json.encode(save_table)))
+        end)
+        return
+    end
+
+    -- Non-SwiftHeart: use the Love grid UI.
     local function write_slot(self)
         local save_table = {
             interpreter = script.save(interpreter),
-            last_line = table.concat(lastlines, ' ')
+            last_line = table.concat(lastlines, ' '),
+            timestamp = os.time()
         }
         dispatch_often("save", save_table)
         if before_menu_screenshot ~= nil then
@@ -84,11 +157,41 @@ on("save_slot", function()
     slot_ui(base_dir, write_slot, write_slot)
 end)
 
+-- ---------------------------------------------------------------------------
+-- Load event
+-- ---------------------------------------------------------------------------
+
 on("load_slot", function(base_dir, closable, novel_name)
     if closable == nil then
         closable = true
     end
     novel_name = novel_name or ""
+
+    if is_swiftheart then
+        -- Native iOS dialog: present sheet, then load when user picks a slot.
+        native_slot_ui(base_dir, "load", function(chosen)
+            if chosen == nil then
+                return
+            end -- user cancelled
+            local fn = base_dir .. "save" .. chosen .. ".json"
+            if lfs.getInfo(fn) then
+                local save_data = json.decode(lfs.read(fn))
+                interpreter = script.load(base_dir, lfs.read, save_data.interpreter, novel_name)
+                dispatch("restore", save_data)
+                dispatch("next_ins")
+            else
+                -- Empty slot chosen → start new game
+                interpreter = script.load(base_dir, lfs.read, {
+                    file = "main.scr"
+                }, novel_name)
+                dispatch("restore", {})
+                dispatch("next_ins")
+            end
+        end)
+        return
+    end
+
+    -- Non-SwiftHeart: use the Love grid UI.
     slot_ui(base_dir, function(self)
         interpreter = script.load(base_dir, lfs.read, self.data.save.interpreter, novel_name)
         dispatch("restore", self.data.save)

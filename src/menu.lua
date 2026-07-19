@@ -5,12 +5,34 @@ end
 save_ui_pending = false
 on("input", function(input)
     if input == "start" then
-        local res = love.window.showMessageBox("Pause", "", {"Continue", "Save", "Load", "Settings", "Main Menu"},
-            "info", true)
         if interpreter ~= nil and interpreter.base_dir ~= nil then
             love.graphics.captureScreenshot(store_screenshot)
         end
         love.timer.sleep(0.005)
+
+        local res
+        if is_swiftheart then
+            -- Use the native iOS action sheet instead of Love's message box.
+            local swiftheart = require("swiftheart")
+            local choice = swiftheart.showPauseMenu()
+            if choice == "continue" then
+                res = 1
+            elseif choice == "save" then
+                res = 2
+            elseif choice == "load" then
+                res = 3
+            elseif choice == "settings" then
+                res = 4
+            elseif choice == "mainmenu" then
+                res = 5
+            else
+                -- Dismissed without a choice → continue
+                res = 1
+            end
+        else
+            res = love.window.showMessageBox("Pause", "", {"Continue", "Save", "Load", "Settings", "Main Menu"}, "info",
+                true)
+        end
 
         if res == 1 then
             return
@@ -35,4 +57,3 @@ on("input", function(input)
 
     end
 end)
-
