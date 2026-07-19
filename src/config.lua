@@ -3,7 +3,7 @@ local LIP = require "lib.LIP"
 local config = {
     audio = {music = 100, sound = 100},
     font = {override_font = false, custom_font = false},
-    background = {red = 0, green = 0, blue = 0, alpha = .8}
+    background = {red = 0, green = 0, blue = 0, alpha = .4}
 }
 
 local function range(copy, section, key, text)

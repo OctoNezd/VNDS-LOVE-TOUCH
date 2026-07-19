@@ -100,7 +100,7 @@ luis.createElement(LYR_BG, "Label", colorPickerLabel)
 -- Background Opacity Slider
 local opacitySlider = luis.newSlider(0, -- min value
 1, -- max value
-0.8, -- default value
+0.4, -- default value
 pickerWidth + ALPHA_SLIDER_Y_OFFSET, 1, doNothing, ALPHA_LABEL_Y_OFFSET + 2, leftColumnX)
 local opacityLabel = luis.newLabel("Opacity", ALPHA_LABEL_Y_OFFSET + 2, 1, ALPHA_LABEL_Y_OFFSET, leftColumnX)
 
