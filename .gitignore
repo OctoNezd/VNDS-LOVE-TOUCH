@@ -1,10 +1,13 @@
 vnds
 build
+core.love
 bin
 love
 sample_vns/Narcissu 2 - R3.7z
 deps
+
 # apple moment
 .DS_Store
+
 app_version.txt
 altStoreManifest.json

@@ -1,3 +1,5 @@
+is_swiftheart = false
+
 local event = require 'event'
 dispatch = event.dispatch
 dispatch_often = event.dispatch_often
@@ -17,7 +19,6 @@ Timer = require 'lib.timer'
 local profile = require 'lib.profile'
 profile.setclock(love.timer.getTime)
 lfs = love.filesystem
-
 lg = love.graphics
 interpreter = nil
 -- require "lovelog"
@@ -99,9 +100,13 @@ function love.load(arg)
     else
         print("no arg, using userdocuments")
         lfs.mountCommonPath("userdocuments", root_path, "readwrite")
-        -- apple moment
-        local dummy_contents = lfs.read("dummy.txt")
-        print(lfs.write(root_path .. "IOS-FILES-DUMDUM.TXT", dummy_contents))
+        if not arg[1] == "swiftheart" then
+            -- apple moment
+            local dummy_contents = lfs.read("dummy.txt")
+            print(lfs.write(root_path .. "IOS-FILES-DUMDUM.TXT", dummy_contents))
+        else
+            is_swiftheart = true
+        end
     end
     love.resize(lg.getWidth(), lg.getHeight())
     dispatch("load")

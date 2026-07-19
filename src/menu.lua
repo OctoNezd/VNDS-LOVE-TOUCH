@@ -10,7 +10,7 @@ on("input", function(input)
         -- 	},
         -- 	closable: true
         -- })
-        local res = love.window.showMessageBox("Pause", "", {"Continue", "Save", "Load", "Settings", "Main Menu"},
+        local res = love.window.showMessageBox("Pause" .. tostring(is_swiftheart), "", {"Continue", "Save", "Load", "Settings", "Main Menu"},
             "info", true)
         love.timer.sleep(0.005)
 
@@ -26,7 +26,11 @@ on("input", function(input)
         elseif res == 4 then
             dispatch("start_cfgui")
         elseif res == 5 then
-            love.event.quit("restart")
+            if is_swiftheart then
+                love.event.quit()
+            else
+                love.event.quit("restart")
+            end
         else
             love.event.quit()
         end

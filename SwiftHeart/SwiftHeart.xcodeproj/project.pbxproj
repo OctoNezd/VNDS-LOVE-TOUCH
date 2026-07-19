@@ -1,0 +1,530 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		05SH0001300D0001000AC2D0 /* LoveViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 05SH0002300D0001000AC2D0 /* LoveViewController.mm */; };
+		05SH0003300D0001000AC2D0 /* liblove.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 05SH0010300D0001000AC2D0 /* liblove.a */; };
+		05SH0004300D0001000AC2D0 /* SDL3.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 05SH0011300D0001000AC2D0 /* SDL3.xcframework */; };
+		05SH0005300D0001000AC2D0 /* SDL3.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 05SH0011300D0001000AC2D0 /* SDL3.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		05SH0006300D0001000AC2D0 /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 05SH0012300D0001000AC2D0 /* OpenAL.framework */; };
+		05SH0007300D0001000AC2D0 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 05SH0013300D0001000AC2D0 /* OpenGLES.framework */; };
+		05SH0008300D0001000AC2D0 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 05SH0014300D0001000AC2D0 /* AudioToolbox.framework */; };
+		05SH0009300D0001000AC2D0 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 05SH0015300D0001000AC2D0 /* QuartzCore.framework */; };
+		05SH000A300D0001000AC2D0 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 05SH0016300D0001000AC2D0 /* CoreGraphics.framework */; };
+		05SH000B300D0001000AC2D0 /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 05SH0017300D0001000AC2D0 /* CoreMotion.framework */; };
+		05SH000C300D0001000AC2D0 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 05SH0018300D0001000AC2D0 /* Metal.framework */; };
+		05SH000D300D0001000AC2D0 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 05SH0019300D0001000AC2D0 /* AVFoundation.framework */; };
+		05SH000E300D0001000AC2D0 /* CoreHaptics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 05SH001A300D0001000AC2D0 /* CoreHaptics.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		05SH000F300D0001000AC2D0 /* GameController.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 05SH001B300D0001000AC2D0 /* GameController.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		05SH001C300D0001000AC2D0 /* libbz2.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 05SH001D300D0001000AC2D0 /* libbz2.tbd */; };
+		05SH001E300D0001000AC2D0 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 05SH001F300D0001000AC2D0 /* libz.tbd */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		05SH0020300D0001000AC2D0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 05SH0021300D0001000AC2D0 /* liblove.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = FA0B78DD1A958B90000E1D17;
+			remoteInfo = "liblove-ios";
+		};
+		05SH0022300D0001000AC2D0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 05SH0021300D0001000AC2D0 /* liblove.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = FA0B78DC1A958B90000E1D17;
+			remoteInfo = "liblove-ios";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		05SH0023300D0001000AC2D0 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				05SH0005300D0001000AC2D0 /* SDL3.xcframework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		05560893300D183A000AC2D0 /* SwiftHeart.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwiftHeart.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		05SH0002300D0001000AC2D0 /* LoveViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = LoveViewController.mm; path = SwiftHeart/LoveViewController.mm; sourceTree = "<group>"; };
+		05SH0011300D0001000AC2D0 /* SDL3.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = SDL3.xcframework; path = "../love/platform/xcode/shared/Frameworks/SDL3.xcframework"; sourceTree = SOURCE_ROOT; };
+		05SH0012300D0001000AC2D0 /* OpenAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenAL.framework; path = System/Library/Frameworks/OpenAL.framework; sourceTree = SDKROOT; };
+		05SH0013300D0001000AC2D0 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
+		05SH0014300D0001000AC2D0 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		05SH0015300D0001000AC2D0 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		05SH0016300D0001000AC2D0 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		05SH0017300D0001000AC2D0 /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
+		05SH0018300D0001000AC2D0 /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
+		05SH0019300D0001000AC2D0 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		05SH001A300D0001000AC2D0 /* CoreHaptics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreHaptics.framework; path = System/Library/Frameworks/CoreHaptics.framework; sourceTree = SDKROOT; };
+		05SH001B300D0001000AC2D0 /* GameController.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameController.framework; path = System/Library/Frameworks/GameController.framework; sourceTree = SDKROOT; };
+		05SH001D300D0001000AC2D0 /* libbz2.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libbz2.tbd; path = usr/lib/libbz2.tbd; sourceTree = SDKROOT; };
+		05SH001F300D0001000AC2D0 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
+		05SH0021300D0001000AC2D0 /* liblove.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = liblove.xcodeproj; path = "../love/platform/xcode/liblove.xcodeproj"; sourceTree = SOURCE_ROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		0556089F300D183B000AC2D0 /* Exceptions for "SwiftHeart" folder in "SwiftHeart" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+				LoveViewController.mm,
+			);
+			target = 05560892300D183A000AC2D0 /* SwiftHeart */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		05560895300D183A000AC2D0 /* SwiftHeart */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				0556089F300D183B000AC2D0 /* Exceptions for "SwiftHeart" folder in "SwiftHeart" target */,
+			);
+			path = SwiftHeart;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		05560890300D183A000AC2D0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				05SH0003300D0001000AC2D0 /* liblove.a in Frameworks */,
+				05SH0004300D0001000AC2D0 /* SDL3.xcframework in Frameworks */,
+				05SH0006300D0001000AC2D0 /* OpenAL.framework in Frameworks */,
+				05SH0007300D0001000AC2D0 /* OpenGLES.framework in Frameworks */,
+				05SH0008300D0001000AC2D0 /* AudioToolbox.framework in Frameworks */,
+				05SH0009300D0001000AC2D0 /* QuartzCore.framework in Frameworks */,
+				05SH000A300D0001000AC2D0 /* CoreGraphics.framework in Frameworks */,
+				05SH000B300D0001000AC2D0 /* CoreMotion.framework in Frameworks */,
+				05SH000C300D0001000AC2D0 /* Metal.framework in Frameworks */,
+				05SH000D300D0001000AC2D0 /* AVFoundation.framework in Frameworks */,
+				05SH000E300D0001000AC2D0 /* CoreHaptics.framework in Frameworks */,
+				05SH000F300D0001000AC2D0 /* GameController.framework in Frameworks */,
+				05SH001C300D0001000AC2D0 /* libbz2.tbd in Frameworks */,
+				05SH001E300D0001000AC2D0 /* libz.tbd in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		0556088A300D183A000AC2D0 = {
+			isa = PBXGroup;
+			children = (
+				05560895300D183A000AC2D0 /* SwiftHeart */,
+				05SH0021300D0001000AC2D0 /* liblove.xcodeproj */,
+				05SH0025300D0001000AC2D0 /* Frameworks */,
+				05560894300D183A000AC2D0 /* Products */,
+				055608AA300D19BC000AC2D0 /* Recovered References */,
+			);
+			sourceTree = "<group>";
+		};
+		05560894300D183A000AC2D0 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				05560893300D183A000AC2D0 /* SwiftHeart.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		055608AA300D19BC000AC2D0 /* Recovered References */ = {
+			isa = PBXGroup;
+			children = (
+				05SH0002300D0001000AC2D0 /* LoveViewController.mm */,
+			);
+			name = "Recovered References";
+			sourceTree = "<group>";
+		};
+		05SH0024300D0001000AC2D0 /* Products (liblove) */ = {
+			isa = PBXGroup;
+			children = (
+				05SH0010300D0001000AC2D0 /* liblove.a */,
+			);
+			name = "Products (liblove)";
+			sourceTree = "<group>";
+		};
+		05SH0025300D0001000AC2D0 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				05SH0011300D0001000AC2D0 /* SDL3.xcframework */,
+				05SH0012300D0001000AC2D0 /* OpenAL.framework */,
+				05SH0013300D0001000AC2D0 /* OpenGLES.framework */,
+				05SH0014300D0001000AC2D0 /* AudioToolbox.framework */,
+				05SH0015300D0001000AC2D0 /* QuartzCore.framework */,
+				05SH0016300D0001000AC2D0 /* CoreGraphics.framework */,
+				05SH0017300D0001000AC2D0 /* CoreMotion.framework */,
+				05SH0018300D0001000AC2D0 /* Metal.framework */,
+				05SH0019300D0001000AC2D0 /* AVFoundation.framework */,
+				05SH001A300D0001000AC2D0 /* CoreHaptics.framework */,
+				05SH001B300D0001000AC2D0 /* GameController.framework */,
+				05SH001D300D0001000AC2D0 /* libbz2.tbd */,
+				05SH001F300D0001000AC2D0 /* libz.tbd */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		05560892300D183A000AC2D0 /* SwiftHeart */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 055608A0300D183B000AC2D0 /* Build configuration list for PBXNativeTarget "SwiftHeart" */;
+			buildPhases = (
+				0556088F300D183A000AC2D0 /* Sources */,
+				05560890300D183A000AC2D0 /* Frameworks */,
+				05560891300D183A000AC2D0 /* Resources */,
+				05SH0023300D0001000AC2D0 /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				05SH0026300D0001000AC2D0 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				05560895300D183A000AC2D0 /* SwiftHeart */,
+			);
+			name = SwiftHeart;
+			packageProductDependencies = (
+			);
+			productName = SwiftHeart;
+			productReference = 05560893300D183A000AC2D0 /* SwiftHeart.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		0556088B300D183A000AC2D0 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 2660;
+				LastUpgradeCheck = 2660;
+				TargetAttributes = {
+					05560892300D183A000AC2D0 = {
+						CreatedOnToolsVersion = 26.6;
+					};
+				};
+			};
+			buildConfigurationList = 0556088E300D183A000AC2D0 /* Build configuration list for PBXProject "SwiftHeart" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 0556088A300D183A000AC2D0;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 05560894300D183A000AC2D0 /* Products */;
+			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 05SH0024300D0001000AC2D0 /* Products (liblove) */;
+					ProjectRef = 05SH0021300D0001000AC2D0 /* liblove.xcodeproj */;
+				},
+			);
+			projectRoot = "";
+			targets = (
+				05560892300D183A000AC2D0 /* SwiftHeart */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		05SH0010300D0001000AC2D0 /* liblove.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = liblove.a;
+			remoteRef = 05SH0020300D0001000AC2D0 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
+
+/* Begin PBXResourcesBuildPhase section */
+		05560891300D183A000AC2D0 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		0556088F300D183A000AC2D0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				05SH0001300D0001000AC2D0 /* LoveViewController.mm in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		05SH0026300D0001000AC2D0 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "liblove-ios";
+			targetProxy = 05SH0022300D0001000AC2D0 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		055608A1300D183B000AC2D0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = YJ46L2G783;
+				ENABLE_PREVIEWS = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/../love/platform/xcode/shared/Frameworks",
+				);
+				GENERATE_INFOPLIST_FILE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/../love/src",
+					"$(PROJECT_DIR)/../love/src/libraries",
+					"$(PROJECT_DIR)/../love/src/modules",
+					"$(PROJECT_DIR)/../love/platform/xcode/shared/Frameworks/SDL3.xcframework/ios-arm64/SDL3.framework/Headers",
+				);
+				INFOPLIST_FILE = SwiftHeart/Info.plist;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)",
+				);
+				MARKETING_VERSION = 1.0;
+				OBJCXX_LANGUAGE_STANDARD = "c++17";
+				PRODUCT_BUNDLE_IDENTIFIER = me.octonezd.SwiftHeart;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "SwiftHeart/SwiftHeart-Bridging-Header.h";
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		055608A2300D183B000AC2D0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = YJ46L2G783;
+				ENABLE_PREVIEWS = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/../love/platform/xcode/shared/Frameworks",
+				);
+				GENERATE_INFOPLIST_FILE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/../love/src",
+					"$(PROJECT_DIR)/../love/src/libraries",
+					"$(PROJECT_DIR)/../love/src/modules",
+					"$(PROJECT_DIR)/../love/platform/xcode/shared/Frameworks/SDL3.xcframework/ios-arm64/SDL3.framework/Headers",
+				);
+				INFOPLIST_FILE = SwiftHeart/Info.plist;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)",
+				);
+				MARKETING_VERSION = 1.0;
+				OBJCXX_LANGUAGE_STANDARD = "c++17";
+				PRODUCT_BUNDLE_IDENTIFIER = me.octonezd.SwiftHeart;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "SwiftHeart/SwiftHeart-Bridging-Header.h";
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		055608A3300D183B000AC2D0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		055608A4300D183B000AC2D0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		0556088E300D183A000AC2D0 /* Build configuration list for PBXProject "SwiftHeart" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				055608A3300D183B000AC2D0 /* Debug */,
+				055608A4300D183B000AC2D0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		055608A0300D183B000AC2D0 /* Build configuration list for PBXNativeTarget "SwiftHeart" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				055608A1300D183B000AC2D0 /* Debug */,
+				055608A2300D183B000AC2D0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 0556088B300D183A000AC2D0 /* Project object */;
+}
