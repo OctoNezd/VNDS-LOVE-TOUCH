@@ -7,6 +7,8 @@ on = event.on
 local remove = event.remove
 local register = event.register
 
+local json = require "lib.json"
+
 local mouseui = require "mouseui"
 create_listbox = mouseui.create_listbox
 
@@ -111,6 +113,54 @@ function love.load(arg)
     love.resize(lg.getWidth(), lg.getHeight())
     dispatch("load")
     print(root_path)
+
+    -- Parse command line arguments for game directory and save slot
+    -- Usage: love . [game_directory] [save_slot]
+    local known_args = {nomount = true, swiftheart = true}
+    local game_arg = nil
+    local save_slot_arg = nil
+    for _, a in ipairs(arg) do
+        if not known_args[a] then
+            if not game_arg then
+                game_arg = a
+            elseif not save_slot_arg then
+                save_slot_arg = tonumber(a)
+                break
+            end
+        end
+    end
+
+    if game_arg then
+        local base_dir = root_path .. game_arg .. "/"
+        if not lfs.getInfo(base_dir, "directory") then
+            dispatch("text", {text = "Game not found: " .. game_arg})
+            return
+        end
+        mount(base_dir)
+        local novel_name = game_arg
+        if lfs.getInfo(base_dir .. "info.txt") ~= nil then
+            local info = parse_info(base_dir .. "info.txt")
+            if info["title"] ~= nil then
+                novel_name = info["title"]
+            end
+        end
+        if save_slot_arg and save_slot_arg >= 1 and save_slot_arg <= 30 then
+            local fn = base_dir .. "save" .. save_slot_arg .. ".json"
+            if lfs.getInfo(fn) then
+                local save_data = json.decode(lfs.read(fn))
+                interpreter = script.load(base_dir, lfs.read, save_data.interpreter, novel_name)
+                dispatch("restore", save_data)
+                dispatch("next_ins")
+                return
+            end
+        end
+        -- Start new game (no valid save slot specified or save not found)
+        interpreter = script.load(base_dir, lfs.read, {file = "main.scr"}, novel_name)
+        dispatch("restore", {})
+        dispatch("next_ins")
+        return
+    end
+
     local novels = lfs.getDirectoryItems(root_path)
     pprint(novels)
     local opts = {}

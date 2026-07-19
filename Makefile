@@ -38,6 +38,9 @@ run: compile
 run-doc: compile
 	love vnds
 
+run-narcissu: compile
+	love vnds nomount "Narcissu 2 - R3.7z" 1
+
 # Run tests
 test:
 	cd src && busted -C . ../spec
