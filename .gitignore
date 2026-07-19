@@ -6,6 +6,8 @@ love
 sample_vns/Narcissu 2 - R3.7z
 deps
 
+.env
+
 # apple moment
 .DS_Store
 

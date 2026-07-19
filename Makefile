@@ -52,3 +52,6 @@ build: compile
 
 install-container: build
 	cp VNDS-LOVE/build/vnds.love ~/Library/Containers/28149278-D215-439E-A9ED-C293C0F93DDE/Data/Documents/core.love
+
+run-onmac: install-container
+	$(MAKE) -C SwiftHeart run-onmac

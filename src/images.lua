@@ -2,20 +2,32 @@ local Timer = require 'lib.timer'
 
 local background = {}
 local images = {}
-local alpha = {value = 1}
+local alpha = {
+    value = 1
+}
 
 on("save", function(self)
-    self.background = {path = background.path}
+    self.background = {
+        path = background.path
+    }
     self.images = _.map(images, function(img)
-        return {path = img.path, x = img.x, y = img.y}
+        return {
+            path = img.path,
+            x = img.x,
+            y = img.y
+        }
     end)
 end)
 
 on("restore", function(self)
     background = {}
     images = {}
-    alpha = {value = 1}
-    if get(self, "background", "path") then dispatch("bgload", self.background) end
+    alpha = {
+        value = 1
+    }
+    if get(self, "background", "path") then
+        dispatch("bgload", self.background)
+    end
     if self.images then
         for _, image in ipairs(self.images) do
             dispatch("setimg", image)
@@ -25,12 +37,21 @@ end)
 
 on("bgload", function(self)
     background = {}
-    if self.path:sub(-1) == "~" then return end
+    if self.path:sub(-1) == "~" then
+        return
+    end
     if self.frames ~= nil then
         alpha.value = 0
-        Timer.tween(self.frames / 60, {[alpha] = {value = 1}})
+        Timer.tween(self.frames / 60, {
+            [alpha] = {
+                value = 1
+            }
+        })
     end
-    background = {path = self.path, img = lg.newImage(self.path)}
+    background = {
+        path = self.path,
+        img = lg.newImage(self.path)
+    }
     local w, h = background.img:getDimensions()
     if w ~= original_width or h ~= original_height then
         original_width = w
@@ -41,15 +62,20 @@ on("bgload", function(self)
 end)
 
 on("setimg", function(self)
-    table.insert(images, {path = self.path, img = lg.newImage(self.path), x = self.x, y = self.y})
+    table.insert(images, {
+        path = self.path,
+        img = lg.newImage(self.path),
+        x = self.x,
+        y = self.y
+    })
 end)
 
 on("draw_background", function()
     lg.setColor(1, 1, 1, alpha.value)
     local scale = math.min(sx, sy)
     if next(background) then
-        lg.draw(background.img, lg.getWidth() / 2, lg.getHeight() / 2, 0, scale, scale,
-            background.img:getWidth() / 2, background.img:getHeight() / 2)
+        lg.draw(background.img, lg.getWidth() / 2, lg.getHeight() / 2, 0, scale, scale, background.img:getWidth() / 2,
+            background.img:getHeight() / 2)
     end
 end)
 

@@ -1,0 +1,6 @@
+label start
+
+text text text text
+text \x1b[31;1mcolored
+
+jump main.scr start

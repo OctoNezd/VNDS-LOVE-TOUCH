@@ -12,7 +12,6 @@ local function preview_slot(i, fn, save, info)
     if love.filesystem.exists(fn .. ".png") then
         img = lg.newImage(fn .. ".png")
     else
-        print("Screenshot doesnt exist, falling back to background for slot", i)
         if save.background and save.background.path then
             img = lg.newImage(save.background.path)
         end
@@ -66,7 +65,8 @@ on("save_slot", function()
     local base_dir = interpreter.base_dir
     local function write_slot(self)
         local save_table = {
-            interpreter = script.save(interpreter)
+            interpreter = script.save(interpreter),
+            last_line = table.concat(lastlines, ' ')
         }
         dispatch_often("save", save_table)
         if before_menu_screenshot ~= nil then
@@ -102,4 +102,11 @@ on("load_slot", function(base_dir, closable, novel_name)
         dispatch("next_ins")
         return true
     end, closable)
+end)
+
+on("draw_done", function()
+    if save_ui_pending then
+        save_ui_pending = false
+        dispatch("save_slot")
+    end
 end)

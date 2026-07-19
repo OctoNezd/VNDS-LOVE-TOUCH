@@ -1,11 +1,13 @@
-local colorify = require("text.text_color").colorify
+local colorlib = require("text.text_color")
+local colorify = colorlib.colorify
 local pprint = require("lib.pprint")
 
 local buffer = {}
 local backlog = {}
+lastlines = {}
 -- Letter-by-letter rendering state
-local text_reveal_progress = 0  -- How many characters have been revealed
-local text_reveal_speed = 0.03  -- Time between each character (in seconds)
+local text_reveal_progress = 0 -- How many characters have been revealed
+local text_reveal_speed = 0.03 -- Time between each character (in seconds)
 local text_reveal_timer = nil
 local text_fully_revealed = true
 
@@ -134,7 +136,9 @@ local function instant_reveal()
 end
 
 local function concat(t1, t2)
-    for i = 1, #t2 do t1[#t1 + 1] = t2[i] end
+    for i = 1, #t2 do
+        t1[#t1 + 1] = t2[i]
+    end
     return t1
 end
 
@@ -163,7 +167,9 @@ local function word_wrap(text, max_width)
                     line = tmp
                 end
             end
-            if #words > 1 then line = line .. " " end
+            if #words > 1 then
+                line = line .. " "
+            end
         end
         table.insert(list[l], last_color)
         table.insert(list[l], line)
@@ -177,14 +183,22 @@ local function done()
 end
 
 on("text", function(self)
-    if self.text == nil then return end
+    if self.text == nil then
+        return
+    end
     local no_input = false
     if self.text:sub(1, 1) == "@" then
         self.text = self.text:sub(2, -1)
         no_input = true
     end
+    table.insert(lastlines, colorlib.strip_colors(self.text))
+    if #lastlines > 3 then
+        table.remove(lastlines, 1)
+    end
     local add_lines = word_wrap(self.text, getWidth() - 2 * pad)
-    for _, line in ipairs(add_lines) do table.insert(backlog, line) end
+    for _, line in ipairs(add_lines) do
+        table.insert(backlog, line)
+    end
     local lines = calculate_lines()
     if #buffer == lines and not no_input then
         -- Buffer is full, replace with new text
@@ -211,7 +225,9 @@ on("text", function(self)
                 end
             end
         end)
-        if no_input then dispatch("next_ins") end
+        if no_input then
+            dispatch("next_ins")
+        end
     end
 end)
 
@@ -260,11 +276,15 @@ on("input", function(self)
                 table.insert(images, ins)
             elseif ins.type == "text" or ins.type == "sound" or ins.type == "music" or ins.type == "bgload" then
                 last_ins[ins.type] = ins
-                if ins.type == "bgload" then images = {} end
+                if ins.type == "bgload" then
+                    images = {}
+                end
             end
             if ins.type == "choice" then
                 buffer = {} -- clear text state when skipping
-                for _, img in ipairs(images) do dispatch("next_ins", img) end
+                for _, img in ipairs(images) do
+                    dispatch("next_ins", img)
+                end
                 for _, value in pairs(last_ins) do
                     dispatch("next_ins", value)
                 end
@@ -281,13 +301,21 @@ on("input", function(self)
                     action = function()
                         line.file:play()
                         return false
-                    end,
+                    end
                 })
             else
-                table.insert(choices, {text = line, action = function() end})
+                table.insert(choices, {
+                    text = line,
+                    action = function()
+                    end
+                })
             end
         end
-        create_listbox({choices = choices, closable = true, selected = #choices})
+        create_listbox({
+            choices = choices,
+            closable = true,
+            selected = #choices
+        })
     end
     return false
 end)
@@ -346,7 +374,9 @@ on("draw_text", function()
 
             -- Only draw if there's something to show
             if #revealed_line > 0 then
-                if revealed_line[2] ~= '' then lg.print(revealed_line, 2 * pad, y_pos) end
+                if revealed_line[2] ~= '' then
+                    lg.print(revealed_line, 2 * pad, y_pos)
+                end
             end
 
             y_pos = y_pos + love.text_font:getHeight() + pad

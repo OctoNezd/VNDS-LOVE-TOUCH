@@ -125,18 +125,26 @@ function love.load(arg)
     end
     love.resize(lg.getWidth(), lg.getHeight())
     dispatch("load")
-    print(root_path)
+    print("Root path is", root_path)
 
     -- Parse command line arguments for game directory and save slot
     -- Usage: love . [game_directory] [save_slot]
+    -- When launched from SwiftHeart the arg table looks like:
+    --   arg[1] = "swiftheart"
+    --   arg[2] = path/to/core.love
+    --   arg[3] = "--fused"
+    --   arg[4] = game_directory_name
+    --   arg[5] = save_slot_number (optional, as string)
     local known_args = {
         nomount = true,
-        swiftheart = true
+        swiftheart = true,
+        ["--fused"] = true
     }
     local game_arg = nil
     local save_slot_arg = nil
     for _, a in ipairs(arg) do
-        if not known_args[a] then
+        -- Skip known flag args and file paths (containing "/" or ".love").
+        if not known_args[a] and not a:find("/") and not a:find("%.love$") then
             if not game_arg then
                 game_arg = a
             elseif not save_slot_arg then
@@ -256,10 +264,6 @@ on("play", function()
 end)
 
 function love.update(dt)
-    if menu_pending then
-        menu_pending = false
-        dispatch("menu")
-    end
     dispatch_often("update", dt)
     if paused <= 0 then
         Timer.update(dt)

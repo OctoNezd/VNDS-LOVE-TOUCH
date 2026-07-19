@@ -47,6 +47,7 @@ function love.draw()
         dispatch_often("draw_choice")
     end
     dispatch_often("draw_mainmenu_button")
+    dispatch_often("draw_done")
 end
 
 -- ============================================================================
