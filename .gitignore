@@ -8,6 +8,8 @@ deps
 
 .env
 
+sample_vns/*/save*
+
 # apple moment
 .DS_Store
 

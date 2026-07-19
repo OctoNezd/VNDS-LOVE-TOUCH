@@ -47,7 +47,7 @@ local function strip_colors(str, i, stripped_string)
     stripped_string = stripped_string or ''
     local s, e = str:find("\\*x1b%[%d*;*%dm", i)
     if s == nil then
-        return str
+        return stripped_string .. str:sub(i, -1)
     end
     local offset = 0
     if str:sub(s, s) == "\\" then -- remove the backslash
@@ -56,8 +56,7 @@ local function strip_colors(str, i, stripped_string)
     if i ~= s then
         stripped_string = stripped_string .. str:sub(i, s - 1)
     end
-    colorify(str, e + 1, stripped_string)
-    return stripped_string
+    return strip_colors(str, e + 1, stripped_string)
 end
 
 return {
