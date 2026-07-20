@@ -73,9 +73,15 @@ end)
 on("draw_background", function()
     lg.setColor(1, 1, 1, alpha.value)
     local scale = math.min(sx, sy)
-    if next(background) then
-        lg.draw(background.img, lg.getWidth() / 2, lg.getHeight() / 2, 0, scale, scale, background.img:getWidth() / 2,
-            background.img:getHeight() / 2)
+    local activeBackground = background
+    if configui_active then
+        activeBackground = {
+            img = love.graphics.newImage("field_in_foreground_with.jpg")
+        }
+    end
+    if next(activeBackground) then
+        lg.draw(activeBackground.img, lg.getWidth() / 2, lg.getHeight() / 2, 0, scale, scale,
+            activeBackground.img:getWidth() / 2, activeBackground.img:getHeight() / 2)
     end
 end)
 
@@ -84,7 +90,23 @@ on("draw_foreground", function()
     local pscale = math.min(px, py)
     local offsetX = lg.getWidth() / 2 - original_width * scale / 2
     local offsetY = lg.getHeight() / 2 - original_height * scale / 2
-    _.each(images, function(img)
-        lg.draw(img.img, img.x * pscale + offsetX, img.y * pscale + offsetY, 0, scale, scale)
+    local activeImages = images
+    if configui_active then
+        local neko = love.graphics.newImage("NekoArc.png")
+        local screenW, screenH = lg.getWidth(), lg.getHeight()
+        activeImages = {{
+            img = neko,
+            x = screenW / 2 - neko:getWidth() * scale / 2,
+            y = screenH - neko:getHeight() * scale,
+            raw = true
+        }}
+    end
+    lg.setColor(1, 1, 1, 1)
+    _.each(activeImages, function(img)
+        if img.raw then
+            lg.draw(img.img, img.x, img.y, 0, scale, scale)
+        else
+            lg.draw(img.img, img.x * pscale + offsetX, img.y * pscale + offsetY, 0, scale, scale)
+        end
     end)
 end)

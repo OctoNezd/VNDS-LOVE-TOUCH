@@ -1,6 +1,7 @@
 gridui_active = false
 local function create_gridui(items, MEDIA_HEIGHT)
     gridui_active = true
+    dont_render_game = true
     local scroll_offset = 0
     local old_scroll_offset = 0
     local scroll_active = false
@@ -27,6 +28,7 @@ local function create_gridui(items, MEDIA_HEIGHT)
     local drawEvt, mousePressedEvt, mouseReleasedEvt, mouseMovedEvt
     local width = love.graphics.getWidth()
     drawEvt = on("draw_gridui", function()
+        love.graphics.setFont(font)
         local item_width = width / 3 - pad_w * 4
         local total_grid_width = item_width * 3 + pad_w * 2
         local start_x = (width - total_grid_width) / 2
@@ -124,6 +126,7 @@ local function create_gridui(items, MEDIA_HEIGHT)
         mouseReleasedEvt:remove()
         mouseMovedEvt:remove()
         gridui_active = false
+        dont_render_game = false
     end
 end
 

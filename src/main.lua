@@ -13,6 +13,8 @@ local mouseui = require "mouseui"
 create_listbox = mouseui.create_listbox
 
 love.graphics.setDefaultFilter("linear", "linear")
+
+dont_render_game = false
 default_pad = 10
 default_linepad = 8
 
@@ -117,7 +119,8 @@ on("next_ins", next_msg)
 
 function love.load(arg)
     pprint(arg)
-    local root_path = "/documents/"
+    root_path = "/documents/"
+    love.resize(lg.getWidth(), lg.getHeight())
     if arg[1] == "nomount" then
         print("custom directory arg is set")
         root_path = "/work_around_symlink_bug/sample_vns/"
@@ -132,7 +135,6 @@ function love.load(arg)
             is_swiftvn = true
         end
     end
-    love.resize(lg.getWidth(), lg.getHeight())
     dispatch("load")
     print("Root path is", root_path)
 

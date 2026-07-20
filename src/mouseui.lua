@@ -33,12 +33,9 @@ function love.draw()
     if ui_debug then
         love.graphics.print("Current FPS: " .. tostring(love.timer.getFPS()), 10, 10)
     end
-    if configui_active then
-        dispatch_often("draw_configui")
-    elseif gridui_active then
-        dispatch_often("draw_gridui")
-    else
-        -- Draw game elements in order from back to front
+
+    -- Draw game elements in order from back to front
+    if not dont_render_game then
         dispatch_often("draw_background")
         dispatch_often("draw_foreground")
         dispatch_often("draw_text")
@@ -46,7 +43,14 @@ function love.draw()
         dispatch_often("draw_debug")
         dispatch_often("draw_choice")
     end
-    dispatch_often("draw_mainmenu_button")
+    if gridui_active and not configui_active then
+        dispatch_often("draw_gridui")
+    end
+    if configui_active then
+        dispatch_often("draw_configui")
+    else
+        dispatch_often("draw_mainmenu_button")
+    end
     dispatch_often("draw_done")
 end
 

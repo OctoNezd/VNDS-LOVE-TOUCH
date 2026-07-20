@@ -8,7 +8,7 @@ luis_debug = false
 -- ============================================================================
 -- CONSTANTS
 -- ============================================================================
-
+local runningConfig = {}
 local FONT_SIZE_LARGE = 46
 local FONT_SIZE_SMALL = 18
 
@@ -28,12 +28,6 @@ local BUTTON_MARGIN_BOTTOM = 5
 
 local LYR_BG = "background"
 local LYR_SOUNDS = "sounds"
-
--- Preview window constants
-local PREVIEW_WIDTH_RATIO = 0.8
-local PREVIEW_HEIGHT_RATIO = 0.2
-local PREVIEW_VERTICAL_OFFSET = 32
-local PREVIEW_SAMPLE_Y_OFFSET = 100
 
 -- Update rate constants
 local TARGET_FPS = 60
@@ -64,8 +58,12 @@ print("Grid dimensions - Width:", gridWidth, "Height:", gridHeight)
 
 local centerX = math.floor(gridWidth / 2)
 local pickerWidth = math.floor(gridWidth / 4)
-local leftColumnX = centerX - pickerWidth - 2
-local rightColumnX = centerX + 10
+-- The color picker renders extra content (color preview + values) adding 180px (9 grid units) beyond pickerWidth
+local colorPickerExtraWidth = math.ceil(180 / luis.gridSize)
+local columnGap = colorPickerExtraWidth + 2
+local totalContentWidth = pickerWidth + columnGap + pickerWidth
+local leftColumnX = centerX - math.floor(totalContentWidth / 2)
+local rightColumnX = leftColumnX + pickerWidth + columnGap
 
 -- ============================================================================
 -- UI ELEMENTS SETUP
@@ -75,14 +73,21 @@ local rightColumnX = centerX + 10
 local function doNothing()
 end
 
--- Main Title
-local titleTheme = {
-    font = love.graphics.newFont(TITLE_FONT_PATH, FONT_SIZE_LARGE),
-    color = {1, 1, 1}
-}
-local titleLabel = luis.newLabel("Settings", FONT_SIZE_SMALL, 6, 1, leftColumnX - 6, "left", titleTheme)
-luis.createElement(LYR_BG, "Label", titleLabel)
-luis.createElement(LYR_SOUNDS, "Label", titleLabel)
+--- background for background settings
+
+local function drawBgFunc(widget)
+    love.graphics.setColor(0, 0, 0, 0.6)
+    love.graphics.rectangle("fill", 0, 0, widget.width, widget.height)
+end
+
+local bgPadding = 2
+local bgLeft = leftColumnX - bgPadding
+local bgRight = rightColumnX + pickerWidth + bgPadding
+local bgWidth = bgRight - bgLeft
+local bgCol = bgLeft
+local bgRow = 2
+local bgTabBackground = luis.newCustom(drawBgFunc, bgWidth, gridHeight - bgRow, bgRow, bgCol)
+luis.createElement(LYR_BG, "Custom", bgTabBackground)
 
 -- ============================================================================
 -- LEFT COLUMN: BACKGROUND SETTINGS
@@ -91,14 +96,15 @@ luis.createElement(LYR_SOUNDS, "Label", titleLabel)
 -- Background Section Header
 
 -- Background Color Picker
-local colorPicker = luis.newColorPicker(pickerWidth, COLORPICKER_HEIGHT, COLORPICKER_Y_POSITION, leftColumnX, doNothing)
-local colorPickerLabel = luis.newLabel("Color", FONT_SIZE_SMALL, 1, COLORPICKER_LABEL_Y_OFFSET, leftColumnX)
+backgroundColorPicker = luis.newColorPicker(pickerWidth, COLORPICKER_HEIGHT, COLORPICKER_Y_POSITION, leftColumnX,
+    doNothing)
+local backgroundColorPickerLabel = luis.newLabel("Color", FONT_SIZE_SMALL, 1, COLORPICKER_LABEL_Y_OFFSET, leftColumnX)
 
-luis.createElement(LYR_BG, "ColorPicker", colorPicker)
-luis.createElement(LYR_BG, "Label", colorPickerLabel)
+luis.createElement(LYR_BG, "ColorPicker", backgroundColorPicker)
+luis.createElement(LYR_BG, "Label", backgroundColorPickerLabel)
 
 -- Background Opacity Slider
-local opacitySlider = luis.newSlider(0, -- min value
+opacitySlider = luis.newSlider(0, -- min value
 1, -- max value
 0.4, -- default value
 pickerWidth + ALPHA_SLIDER_Y_OFFSET, 1, doNothing, ALPHA_LABEL_Y_OFFSET + 2, leftColumnX)
@@ -112,7 +118,7 @@ luis.createElement(LYR_BG, "Label", opacityLabel)
 -- ============================================================================
 
 -- Custom Font Checkbox
-local customFontCheckbox = luis.newCheckBox(false, 3, doNothing, COLORPICKER_LABEL_Y_OFFSET - 1, rightColumnX)
+customFontCheckbox = luis.newCheckBox(false, 3, update_font, COLORPICKER_LABEL_Y_OFFSET - 1, rightColumnX)
 local customFontLabel = luis.newLabel("Use custom font", FONT_SIZE_SMALL, 3, COLORPICKER_LABEL_Y_OFFSET - 1,
     rightColumnX + 4)
 local customFontLabelHint = luis.newLabel("(custom.ttf in app folder)", FONT_SIZE_SMALL + 30, 2,
@@ -162,7 +168,7 @@ luis.createElement(LYR_SOUNDS, "Label", sfxVolumeLabel)
 -- ============================================================================
 
 local function applySettings()
-    local red, green, blue = unpack(colorPicker.color)
+    local red, green, blue = unpack(backgroundColorPicker.color)
     local newConfig = {
         audio = {
             music = math.floor(musicVolumeSlider.value),
@@ -179,16 +185,22 @@ local function applySettings()
             alpha = opacitySlider.value
         }
     }
-
-    dispatch("config", newConfig)
-    dispatch("save_config", newConfig)
+    for key, value in pairs(runningConfig) do -- override defaults with config
+        if newConfig[key] ~= nil then
+            _.extend(runningConfig[key], newConfig[key])
+        end
+    end
+    dispatch("config", runningConfig)
+    dispatch("save_config", runningConfig)
     Timer.after(0.1, function()
         configui_active = false
+        dont_render_game = false
     end)
 end
 
 local function cancelSettings()
     configui_active = false
+    dont_render_game = false
 end
 
 -- ============================================================================
@@ -196,21 +208,28 @@ end
 -- ============================================================================
 
 local buttonWidth = gridWidth / 4
-local TAB_BASE = gridWidth / 3 + 2
+-- Position Apply and Cancel buttons centered within the background
+local applyButtonCol = bgLeft + math.floor((bgWidth / 2 - buttonWidth) / 2)
+local cancelButtonCol = bgLeft + math.floor(bgWidth / 2) + math.floor((bgWidth / 2 - buttonWidth) / 2)
+
 -- Apply Button
 local applyButton = luis.newButton("Apply", buttonWidth, BUTTON_HEIGHT, applySettings, doNothing,
-    gridHeight - BUTTON_MARGIN_BOTTOM, gridWidth / 4 - buttonWidth / 2)
+    gridHeight - BUTTON_MARGIN_BOTTOM, applyButtonCol)
 luis.createElement(LYR_BG, "Button", applyButton)
 luis.createElement(LYR_SOUNDS, "Button", applyButton)
 
 -- Cancel Button
 local cancelButton = luis.newButton("Cancel", buttonWidth, BUTTON_HEIGHT, doNothing, cancelSettings,
-    gridHeight - BUTTON_MARGIN_BOTTOM, gridWidth - gridWidth / 4 - buttonWidth / 2)
+    gridHeight - BUTTON_MARGIN_BOTTOM, cancelButtonCol)
 luis.createElement(LYR_BG, "Button", cancelButton)
 luis.createElement(LYR_SOUNDS, "Button", cancelButton)
 
+-- Position tab buttons centered within the background
+local tabTotalWidth = 2 * buttonWidth
+local TAB_BASE = bgLeft + math.floor((bgWidth - tabTotalWidth) / 2)
+
 local TAB_THEME = {
-    color = {0.2, 0.2, 0.2, 1},
+    color = {0.2, 0.2, 0.2, 0},
     hoverColor = {0.25, 0.25, 0.25, 1},
     pressedColor = {0.15, 0.15, 0.15, 1},
     textColor = {1, 1, 1, 1},
@@ -223,79 +242,40 @@ local TAB_THEME = {
 }
 local switchBgLyr = luis.newButton(" UI", buttonWidth, BUTTON_HEIGHT, doNothing, function()
     luis.setCurrentLayer(LYR_BG)
-end, 2, TAB_BASE, TAB_THEME)
+    dont_render_game = false
+end, bgRow, TAB_BASE, TAB_THEME)
 luis.createElement(LYR_BG, "Button", switchBgLyr)
 luis.createElement(LYR_SOUNDS, "Button", switchBgLyr)
 local switchSoundsLyr = luis.newButton(" Sounds", buttonWidth, BUTTON_HEIGHT, doNothing, function()
+    dont_render_game = true
     luis.setCurrentLayer(LYR_SOUNDS)
-end, 2, TAB_BASE + buttonWidth, TAB_THEME)
+end, bgRow, TAB_BASE + buttonWidth, TAB_THEME)
 luis.createElement(LYR_BG, "Button", switchSoundsLyr)
 luis.createElement(LYR_SOUNDS, "Button", switchSoundsLyr)
--- ============================================================================
--- DIALOG PREVIEW RENDERING
--- ============================================================================
-
-local function renderDialogPreview()
-    -- Calculate preview window position
-    local previewX = love.graphics.getWidth() / 2 - preview_width / 2
-    local previewY = applyButton.position.y * luis.scale - preview_height - PREVIEW_VERTICAL_OFFSET
-
-    -- Draw background sample image
-    love.graphics.draw(background_sample, background_sample_quad, previewX, previewY)
-
-    -- Draw colored overlay with current settings
-    local red, green, blue = unpack(colorPicker.color)
-    local alpha = opacitySlider.value
-    love.graphics.setColor(red, green, blue, alpha)
-    love.graphics.rectangle("fill", previewX + pad_h, previewY + pad_h, preview_width - pad_w * 2,
-        preview_height - pad_h * 2)
-
-    -- Draw sample text
-    love.graphics.setColor(1, 1, 1)
-    local fonts = {}
-    love.text_font = lg.newFont(32)
-    if customFontCheckbox.value then
-        table.insert(fonts, "/documents/custom.ttf")
-        table.insert(fonts, "/documents/custom.otf")
-    end
-    for _, font in pairs(fonts) do
-        if (love.filesystem.exists(font)) then
-            love.text_font = lg.newFont(font, 32)
-        end
-    end
-    love.graphics.setFont(love.text_font)
-    love.graphics.print("Yes, it's puzzling.", previewX + pad_h * 2, previewY + pad_h * 2)
-end
 
 -- ============================================================================
 -- EVENT HANDLERS
 -- ============================================================================
 
-on("load", function()
-    background_sample = love.graphics.newImage("dialog_preview.png")
-end)
-
 on("config", function(config)
     -- Update UI elements with loaded configuration
-    colorPicker.color =
-        {config.background.red, config.background.green, config.background.blue, config.background.alpha}
+    backgroundColorPicker.color = {config.background.red, config.background.green, config.background.blue,
+                                   config.background.alpha}
     opacitySlider.value = config.background.alpha
     musicVolumeSlider.value = config.audio.music
     sfxVolumeSlider.value = config.audio.sound
     customFontCheckbox:setValue(config.font.custom_font)
     noVnFontCheckbox:setValue(config.font.override_font)
-
+    runningConfig = config
 end)
 
 on("start_cfgui", function()
     configui_active = true
+    dont_render_game = false
 end)
 
 on("draw_configui", function()
     luis.draw()
-    if luis.currentLayer == LYR_BG then
-        renderDialogPreview()
-    end
 end)
 
 on("configui_mr", function(x, y, button, istouch)
@@ -313,22 +293,12 @@ end)
 local accumulatedTime = 0
 
 on("update", function(dt)
-    -- Update preview dimensions based on window size
-    preview_width = love.graphics.getWidth() * PREVIEW_WIDTH_RATIO
-    preview_height = love.graphics.getHeight() * PREVIEW_HEIGHT_RATIO
-
-    -- Calculate quad for background sample
-    local sampleXOffset = background_sample:getWidth() / 2 - preview_width / 2
-    background_sample_quad = love.graphics.newQuad(sampleXOffset, PREVIEW_SAMPLE_Y_OFFSET, preview_width,
-        preview_height, background_sample)
-
-    -- Update UI scale
-    luis.updateScale()
-
     -- Only update if config UI is active
     if not configui_active then
         return
     end
+    -- Update UI scale
+    luis.updateScale()
 
     -- Update animations at target framerate
     accumulatedTime = accumulatedTime + dt

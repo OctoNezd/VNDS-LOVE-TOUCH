@@ -59,7 +59,7 @@ local function make_cjk_fallback(size)
     return nil
 end
 
-local function update_font()
+function update_font()
     local fonts = {}
     if interpreter and not override_font then
         local font_path = interpreter.base_dir .. "default.ttf"
@@ -67,14 +67,15 @@ local function update_font()
         table.insert(fonts, font_path)
         table.insert(fonts, font_path_otf)
     end
-    if custom_font then
-        table.insert(fonts, "/documents/custom.ttf")
-        table.insert(fonts, "/documents/custom.otf")
+    if custom_font or customFontCheckbox.value then
+        table.insert(fonts, root_path .. "/custom.ttf")
+        table.insert(fonts, root_path .. "/custom.otf")
     end
     local primary = nil
     for _, f in pairs(fonts) do
         print("Checking font", f)
         if love.filesystem.exists(f) then
+            print("Font", f, "exists")
             primary = lg.newFont(f, 32)
             break
         end
@@ -216,6 +217,42 @@ local function word_wrap(text, max_width)
         line = ""
     end
     return list
+end
+
+-- Build the demo buffer at runtime using the same word_wrap logic as the
+-- normal buffer so it respects the current padding/font settings.
+local demo_text = [[Oh, the universe!
+ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam non mauris velit. Etiam congue arcu varius metus pharetra, id ornare tellus finibus. Nullam nec turpis in magna imperdiet euismod in non libero. Integer non porttitor mauris, et lobortis neque. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec iaculis dignissim ligula vitae gravida. Nam placerat quam enim, nec malesuada metus sagittis eu. Integer sed elit posuere, dignissim eros vel, cursus risus.
+
+Vestibulum suscipit, mauris id condimentum efficitur, felis lacus egestas nulla, quis mattis tellus odio et libero. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Donec egestas nisi ligula, sed consectetur justo fringilla a. Cras sagittis a turpis nec sagittis. Quisque vulputate scelerisque elit, id eleifend nibh lobortis id. Fusce nisi velit, luctus id dignissim vel, suscipit tincidunt nisi. Integer blandit tincidunt tellus nec elementum. Aliquam sed suscipit est, ut tristique turpis. Maecenas sodales magna purus, in mollis nibh ullamcorper in. Vivamus id elit nec erat dictum fringilla. Ut fringilla sem vitae congue gravida. Sed vehicula est in quam finibus vestibulum. Suspendisse sed sagittis lectus. Phasellus quis dolor at leo facilisis suscipit ac vel justo. Nulla facilisi. Pellentesque pharetra viverra venenatis.
+
+Donec eleifend gravida sem, at cursus urna ullamcorper vitae. Quisque nec vehicula ipsum. In hac habitasse platea dictumst. Praesent rutrum eros vel eros aliquam efficitur ut sit amet justo. Ut vehicula porta risus, sit amet ultricies risus mollis sit amet. Morbi justo nisl, lacinia et posuere sed, convallis sed orci. Nunc a tortor facilisis, suscipit ipsum vitae, convallis massa. Donec vitae pharetra nulla. Sed tincidunt justo tellus, ac lobortis mauris iaculis vitae. Cras ullamcorper quam quis ligula semper suscipit. Vestibulum ultricies vestibulum condimentum. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Vestibulum tempus tellus quis nunc volutpat ornare. In eget nisl feugiat nisi luctus iaculis sagittis eget nunc.
+
+Donec sit amet posuere augue. Duis purus justo, bibendum vel velit id, aliquet viverra eros. Nulla egestas ligula magna, vel blandit enim pellentesque vitae. Integer tristique orci tellus, tincidunt luctus orci sodales nec. Mauris ac pellentesque odio. Integer eu rhoncus ligula. Donec ultricies sodales risus id rhoncus. Praesent mollis id urna non suscipit. Morbi quam leo, ultricies vitae pharetra in, vestibulum eget nibh. Vivamus est lacus, pellentesque venenatis ante non, bibendum scelerisque dolor. Pellentesque eleifend porttitor sollicitudin. Nam a euismod neque, faucibus sagittis est.
+
+Nam aliquam mauris eros. Maecenas ornare interdum nulla eu tempor. Nam tellus tortor, pulvinar et tellus sit amet, venenatis finibus urna. Praesent lobortis ante purus, et tincidunt nulla luctus accumsan. Quisque sed leo accumsan, cursus felis id, lobortis mi. Cras ultricies volutpat turpis. Aliquam in ipsum vel magna blandit volutpat quis in sem. Cras sed convallis risus, pretium dapibus turpis. Maecenas pulvinar semper elementum. Morbi non pulvinar dui, a porta elit. Mauris non hendrerit nunc, vehicula iaculis lacus. Praesent et commodo erat.
+
+Donec tristique et libero eget facilisis. Donec eleifend rutrum libero, sed gravida tortor molestie eu. Nunc at venenatis sapien. Phasellus vel. 
+]]
+local function build_demo_buffer()
+    local max_width = getWidth() - 2 * pad_w - 2 * pad_w_inner
+    local result = {}
+    -- Split demo text by newlines first, then word-wrap each line separately.
+    -- word_wrap doesn't handle embedded newlines, which causes lines to overlap
+    -- because love.graphics.print renders \n as a line break but y_pos only
+    -- advances by one line height per buffer entry.
+    for segment in demo_text:gmatch("([^\n]*)\n?") do
+        if segment == "" then
+            -- Preserve blank lines as empty entries
+            table.insert(result, {{1, 1, 1, 1}, ""})
+        else
+            local wrapped = word_wrap(segment, max_width)
+            for _, line in ipairs(wrapped) do
+                table.insert(result, line)
+            end
+        end
+    end
+    return result
 end
 
 local function done()
@@ -361,14 +398,23 @@ on("input", function(self)
 end)
 
 on("draw_text", function()
-    if #buffer > 0 then
+    local used_buffer = buffer
+    if configui_active then
+        used_buffer = build_demo_buffer()
+    end
+    if #used_buffer > 0 then
         lg.setFont(love.text_font)
         local w = getWidth() - 2 * pad_w
-        local draw_buffer = _.first(buffer, calculate_lines())
+        local draw_buffer = _.first(used_buffer, calculate_lines())
         local h = pad_h * 2 + pad_h_inner * 2 + (love.text_font:getHeight() + linepad) * calculate_lines()
         local x = getSafeX() + pad_w
         local y = (love.graphics.getHeight() - h) / 2
-        lg.setColor(bg_color_red, bg_color_green, bg_color_blue, bg_color_alpha)
+        if configui_active then
+            local red, green, blue = unpack(backgroundColorPicker.color)
+            lg.setColor(red, green, blue, opacitySlider.value)
+        else
+            lg.setColor(bg_color_red, bg_color_green, bg_color_blue, bg_color_alpha)
+        end
         lg.rectangle("fill", x, y, w, h)
         lg.setColor(1, 1, 1)
         local y_pos = y + pad_h + pad_h_inner
