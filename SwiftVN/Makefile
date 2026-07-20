@@ -12,7 +12,7 @@ boot-sim:
 
 build-sim: boot-sim
 	xcodebuild -scheme "SwiftVN" \
-		-destination 'platform=iOS Simulator,arch=arm64,name=${DEVICE_ID}' \
+		-destination 'id=${SIM_ID}' \
 		-configuration Debug \
 		-derivedDataPath ./app
 

@@ -231,7 +231,6 @@ end
 -- Listbox layout constants
 local BUTTON_MARGIN = 5
 local BUTTON_PADDING = 15
-local BUTTON_WIDTH = SAFE_WIDTH - BUTTON_MARGIN * 2
 local BUTTON_CORNER_RADIUS = 10
 local BUTTON_FILL_OPACITY = 0.5
 local BUTTON_BORDER_OPACITY = 0.5
@@ -240,7 +239,6 @@ local SCROLL_BOTTOM_PADDING = 200
 ---Create an interactive scrollable listbox with choices
 ---@param self table Configuration table with choices array and optional callbacks
 local function create_listbox(self)
-    local window_width = SAFE_WIDTH
     local font = love.graphics.getFont()
     local text = love.graphics.newTextBatch(font)
     local draw_event, input_event
@@ -279,7 +277,7 @@ local function create_listbox(self)
     -- Calculate total height of all choices
     local total_height = 0
     for _, choice in ipairs(self.choices) do
-        local _, wrapped_lines = font:getWrap(choice.text, window_width - BUTTON_PADDING * 2)
+        local _, wrapped_lines = font:getWrap(choice.text, SAFE_WIDTH - BUTTON_PADDING * 2)
         local button_height = font:getHeight() * #wrapped_lines + BUTTON_MARGIN * 2
 
         -- Add media height if present
@@ -309,6 +307,7 @@ local function create_listbox(self)
         text:clear()
         buttons = {}
         local current_y = SCROLL_OFFSET
+        local safe_x, _, window_width, _ = love.window.getSafeArea()
 
         -- Draw each choice button
         for _, choice in ipairs(self.choices) do
@@ -348,12 +347,12 @@ local function create_listbox(self)
 
             -- Draw button background
             love.graphics.setColor(1, 1, 1, BUTTON_FILL_OPACITY)
-            love.graphics.rectangle("fill", SAFE_X + BUTTON_MARGIN, button_y, button_width, button_height,
+            love.graphics.rectangle("fill", safe_x + BUTTON_MARGIN, button_y, button_width, button_height,
                 BUTTON_CORNER_RADIUS, BUTTON_CORNER_RADIUS)
 
             -- Draw button border
             love.graphics.setColor(0.5, 0.5, 0.5, BUTTON_BORDER_OPACITY)
-            love.graphics.rectangle("line", SAFE_X + BUTTON_MARGIN, button_y, button_width, button_height,
+            love.graphics.rectangle("line", safe_x + BUTTON_MARGIN, button_y, button_width, button_height,
                 BUTTON_CORNER_RADIUS, BUTTON_CORNER_RADIUS)
 
             -- Draw button text
