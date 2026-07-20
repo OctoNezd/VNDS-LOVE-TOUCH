@@ -12,7 +12,7 @@ local function create_gridui(items, MEDIA_HEIGHT)
 
     -- Calculate scroll bounds
     local rows = math.ceil(#items / 3)
-    local total_height = rows * (MEDIA_HEIGHT + TEXT_HEIGHT + pad) + pad * 4
+    local total_height = rows * (MEDIA_HEIGHT + TEXT_HEIGHT + pad_h) + pad_h * 4
     local screen_height = love.graphics.getHeight()
     scroll_max = 0
     scroll_min = math.min(0, -(total_height - screen_height))
@@ -27,13 +27,13 @@ local function create_gridui(items, MEDIA_HEIGHT)
     local drawEvt, mousePressedEvt, mouseReleasedEvt, mouseMovedEvt
     local width = love.graphics.getWidth()
     drawEvt = on("draw_gridui", function()
-        local item_width = width / 3 - pad * 4
-        local total_grid_width = item_width * 3 + pad * 2
+        local item_width = width / 3 - pad_w * 4
+        local total_grid_width = item_width * 3 + pad_w * 2
         local start_x = (width - total_grid_width) / 2
         for idx = 1, #items do
             local item = items[idx]
-            local item_x = start_x + (item_width + pad) * math.fmod(idx - 1, 3)
-            local item_y = scroll_offset + pad * 4 + (MEDIA_HEIGHT + TEXT_HEIGHT + pad) * math.floor((idx - 1) / 3)
+            local item_x = start_x + (item_width + pad_w) * math.fmod(idx - 1, 3)
+            local item_y = scroll_offset + pad_h * 4 + (MEDIA_HEIGHT + TEXT_HEIGHT + pad_h) * math.floor((idx - 1) / 3)
 
             -- Store bounds for click detection
             item._bounds = {

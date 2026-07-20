@@ -13,7 +13,16 @@ local mouseui = require "mouseui"
 create_listbox = mouseui.create_listbox
 
 love.graphics.setDefaultFilter("linear", "linear")
-pad = 10
+default_pad = 10
+default_linepad = 8
+
+pad_h = default_pad
+pad_w = default_pad
+
+pad_h_inner = default_pad
+pad_w_inner = default_pad
+
+linepad = default_linepad
 
 script = require "script"
 pprint = require "lib.pprint"
@@ -126,6 +135,9 @@ function love.load(arg)
     love.resize(lg.getWidth(), lg.getHeight())
     dispatch("load")
     print("Root path is", root_path)
+
+    local config = load_config()
+    setup_padding_vars(config)
 
     -- Parse command line arguments for game directory and save slot
     -- Usage: love . [game_directory] [save_slot]

@@ -20,7 +20,7 @@ end
 local function getSafeY()
     local SAFE_X, SAFE_Y, SAFE_WIDTH, SAFE_HEIGHT = love.window.getSafeArea()
     if SAFE_Y == 0 then
-        return pad
+        return pad_h
     end
     return SAFE_Y
 end
@@ -38,7 +38,7 @@ local function getHeight()
 end
 
 local function calculate_lines()
-    return math.floor(getHeight() / (love.text_font:getHeight() + pad))
+    return math.floor((getHeight() - pad_h * 2 - pad_h_inner * 2) / (love.text_font:getHeight() + linepad))
 end
 
 local override_font = nil
@@ -89,6 +89,16 @@ local function update_font()
     love.text_font = primary
 end
 
+local default_pad = 8
+
+function setup_padding_vars(config)
+    pad_h = default_pad + config.padding.height
+    pad_w = default_pad + config.padding.width
+    pad_h_inner = default_pad + config.padding.height_inner
+    pad_w_inner = default_pad + config.padding.width_inner
+    linepad = default_linepad + config.padding.line
+end
+
 local bg_color_red = 0
 local bg_color_blue = 0
 local bg_color_green = 0
@@ -106,6 +116,7 @@ on("config", function(self)
     bg_color_green = self.background.green
     bg_color_blue = self.background.blue
     bg_color_alpha = self.background.alpha
+    setup_padding_vars(self)
     update_font()
 end)
 
@@ -224,7 +235,7 @@ on("text", function(self)
     if #lastlines > 3 then
         table.remove(lastlines, 1)
     end
-    local add_lines = word_wrap(self.text, getWidth() - 3 * pad)
+    local add_lines = word_wrap(self.text, getWidth() - 2 * pad_w - 2 * pad_w_inner)
     for _, line in ipairs(add_lines) do
         table.insert(backlog, line)
     end
@@ -352,15 +363,15 @@ end)
 on("draw_text", function()
     if #buffer > 0 then
         lg.setFont(love.text_font)
-        local w = getWidth() - 2 * pad
+        local w = getWidth() - 2 * pad_w
         local draw_buffer = _.first(buffer, calculate_lines())
-        local h = pad + (love.text_font:getHeight() + pad) * calculate_lines()
-        local x = getSafeX() + pad
+        local h = pad_h * 2 + pad_h_inner * 2 + (love.text_font:getHeight() + linepad) * calculate_lines()
+        local x = getSafeX() + pad_w
         local y = (love.graphics.getHeight() - h) / 2
         lg.setColor(bg_color_red, bg_color_green, bg_color_blue, bg_color_alpha)
         lg.rectangle("fill", x, y, w, h)
         lg.setColor(1, 1, 1)
-        local y_pos = y + pad
+        local y_pos = y + pad_h + pad_h_inner
 
         -- Track characters revealed so far
         local chars_drawn = 0
@@ -404,11 +415,11 @@ on("draw_text", function()
             -- Only draw if there's something to show
             if #revealed_line > 0 then
                 if revealed_line[2] ~= '' then
-                    lg.print(revealed_line, x + pad, y_pos)
+                    lg.print(revealed_line, x + pad_w_inner, y_pos)
                 end
             end
 
-            y_pos = y_pos + love.text_font:getHeight() + pad
+            y_pos = y_pos + love.text_font:getHeight() + linepad
 
             -- Stop if we've shown all revealed characters
             if line_finished and chars_drawn >= text_reveal_progress then

@@ -247,7 +247,8 @@ local function renderDialogPreview()
     local red, green, blue = unpack(colorPicker.color)
     local alpha = opacitySlider.value
     love.graphics.setColor(red, green, blue, alpha)
-    love.graphics.rectangle("fill", previewX + pad, previewY + pad, preview_width - pad * 2, preview_height - pad * 2)
+    love.graphics.rectangle("fill", previewX + pad_h, previewY + pad_h, preview_width - pad_w * 2,
+        preview_height - pad_h * 2)
 
     -- Draw sample text
     love.graphics.setColor(1, 1, 1)
@@ -263,7 +264,7 @@ local function renderDialogPreview()
         end
     end
     love.graphics.setFont(love.text_font)
-    love.graphics.print("Yes, it's puzzling.", previewX + pad * 2, previewY + pad * 2)
+    love.graphics.print("Yes, it's puzzling.", previewX + pad_h * 2, previewY + pad_h * 2)
 end
 
 -- ============================================================================
