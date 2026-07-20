@@ -163,14 +163,15 @@ function love.mousemoved(x, y, dx, dy)
 end
 
 function love.mousereleased(x, y, button, istouch)
-    -- Check if menu button was clicked
-    if x >= MENU_BUTTON_START_X and y > MENU_BUTTON_START_Y then
-        dispatch("input", "start")
-        return
-    end
     -- Delegate to config UI if active
     if configui_active then
         dispatch_often("configui_mr", x, y, button, istouch)
+        return
+    end
+
+    -- Check if menu button was clicked
+    if x >= MENU_BUTTON_START_X and y > MENU_BUTTON_START_Y then
+        dispatch("input", "start")
         return
     end
     if gridui_active then

@@ -90,9 +90,20 @@ function update_font()
     love.text_font = primary
 end
 
-local default_pad = 8
-
+pad_h = default_pad
+pad_w = default_pad
+pad_h_inner = default_pad
+pad_w_inner = default_pad
+linepad = default_linepad
 function setup_padding_vars(config)
+    if configui_active then
+        pad_w_inner = padWInnerSpinner.value + default_pad
+        pad_h_inner = padHInnerSpinner.value + default_pad
+        pad_w = padWSpinner.value + default_pad
+        pad_h = padHSpinner.value + default_pad
+        linepad = linePadSpinner.value + default_linepad
+        return
+    end
     pad_h = default_pad + config.padding.height
     pad_w = default_pad + config.padding.width
     pad_h_inner = default_pad + config.padding.height_inner
@@ -400,6 +411,7 @@ end)
 on("draw_text", function()
     local used_buffer = buffer
     if configui_active then
+        setup_padding_vars()
         used_buffer = build_demo_buffer()
     end
     if #used_buffer > 0 then

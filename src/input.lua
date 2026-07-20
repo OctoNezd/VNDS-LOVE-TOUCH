@@ -15,6 +15,9 @@ local keyboard_map = {
     ["b"] = "b"
 }
 on("keyboard_input", function(key)
+    if key == "g" then
+        dispatch("luis_debug")
+    end
     if key == "c" then
         dispatch("start_cfgui")
     end

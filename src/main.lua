@@ -1,6 +1,7 @@
 is_swiftvn = false
 
 local event = require 'event'
+require 'misc'
 dispatch = event.dispatch
 dispatch_often = event.dispatch_often
 on = event.on
@@ -121,7 +122,8 @@ function love.load(arg)
     pprint(arg)
     root_path = "/documents/"
     love.resize(lg.getWidth(), lg.getHeight())
-    if arg[1] == "nomount" then
+    local arg_flags = utils_Set(arg)
+    if arg_flags["nomount"] then
         print("custom directory arg is set")
         root_path = "/work_around_symlink_bug/sample_vns/"
     else
@@ -135,11 +137,17 @@ function love.load(arg)
             is_swiftvn = true
         end
     end
+
     dispatch("load")
     print("Root path is", root_path)
 
     local config = load_config()
     setup_padding_vars(config)
+
+    if arg_flags["configui"] then
+        dispatch("start_cfgui")
+        return
+    end
 
     -- Parse command line arguments for game directory and save slot
     -- Usage: love . [game_directory] [save_slot]
@@ -152,7 +160,8 @@ function love.load(arg)
     local known_args = {
         nomount = true,
         swiftvn = true,
-        ["--fused"] = true
+        ["--fused"] = true,
+        configui = true
     }
     local game_arg = nil
     local save_slot_arg = nil

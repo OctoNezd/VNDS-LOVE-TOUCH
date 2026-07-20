@@ -39,6 +39,12 @@ local TARGET_FPS = 60
 local initLuis = require("luis.init")
 local luis = initLuis("luis/widgets")
 
+-- Register local custom widgets
+local numberSpinner = require("widgets.numberSpinner")
+numberSpinner.setluis(luis)
+luis.widgets["numberSpinner"] = numberSpinner
+luis.newNumberSpinner = numberSpinner.new
+
 -- Register flux for UI animations
 luis.flux = require("luis.3rdparty.flux")
 luis.theme.text.font = love.graphics.newFont(LUIS_FONT_PATH, FONT_SIZE_LARGE)
@@ -137,6 +143,67 @@ local noVnFontLabel = luis.newLabel("Don't use VN font", FONT_SIZE_SMALL, 3, COL
 
 luis.createElement(LYR_BG, "CheckBox", noVnFontCheckbox)
 luis.createElement(LYR_BG, "Label", noVnFontLabel)
+
+-- ============================================================================
+--- padding!
+-- ============================================================================
+
+local spinnerHeight = 5
+local spinnerWidth = 10
+local paddingLabelsY = ALPHA_LABEL_Y_OFFSET + 3
+local paddingLabelsHeightY = paddingLabelsY + 4
+local paddingLabelsWidthY = paddingLabelsHeightY + spinnerHeight
+local paddingOuterLabelsX = leftColumnX + spinnerWidth * 2
+local linePaddingLabelsX = paddingOuterLabelsX + spinnerWidth * 1.5
+
+local paddingInnerLabel = luis.newLabel("Padding Inner", FONT_SIZE_LARGE, 3, paddingLabelsY, leftColumnX)
+local paddingHeightLabel = luis.newLabel("Height", FONT_SIZE_LARGE, 3, paddingLabelsHeightY, leftColumnX)
+local paddingWidthLabel = luis.newLabel("Width", FONT_SIZE_LARGE, 3, paddingLabelsWidthY, leftColumnX)
+
+luis.createElement(LYR_BG, "Label", paddingHeightLabel)
+luis.createElement(LYR_BG, "Label", paddingWidthLabel)
+
+-- comments for formatter to fuck off
+padHInnerSpinner = luis.newNumberSpinner(-default_pad, 50, 0, 1, -- vals
+spinnerWidth, spinnerHeight - 2, -- wh
+doNothing, -- act
+paddingLabelsHeightY, leftColumnX + 8 -- pos
+)
+padWInnerSpinner = luis.newNumberSpinner(-default_pad, 50, 0, 1, -- vals
+spinnerWidth, spinnerHeight - 2, -- wh
+doNothing, -- act
+paddingLabelsWidthY, leftColumnX + 8 -- pos
+)
+
+luis.createElement(LYR_BG, "NumberSpinner", padHInnerSpinner)
+luis.createElement(LYR_BG, "NumberSpinner", padWInnerSpinner)
+luis.createElement(LYR_BG, "Label", paddingInnerLabel)
+
+local paddingOuterLabel = luis.newLabel("Outer", FONT_SIZE_LARGE, 3, paddingLabelsY, paddingOuterLabelsX)
+
+-- comments for formatter to fuck off
+padHSpinner = luis.newNumberSpinner(-50, 50, 0, 1, -- vals
+spinnerWidth, spinnerHeight - 2, -- wh
+doNothing, -- act
+paddingLabelsHeightY, paddingOuterLabelsX -- pos
+)
+padWSpinner = luis.newNumberSpinner(-50, 50, 0, 1, -- vals
+spinnerWidth, spinnerHeight - 2, -- wh
+doNothing, -- act
+paddingLabelsWidthY, paddingOuterLabelsX -- pos
+)
+luis.createElement(LYR_BG, "NumberSpinner", padHSpinner)
+luis.createElement(LYR_BG, "NumberSpinner", padWSpinner)
+luis.createElement(LYR_BG, "Label", paddingOuterLabel)
+
+linePadSpinner = luis.newNumberSpinner(-default_linepad, 50, 0, 1, -- vals
+spinnerWidth, spinnerHeight - 2, -- wh
+doNothing, -- act
+paddingLabelsHeightY, linePaddingLabelsX -- pos
+)
+local linePaddingLabel = luis.newLabel("In-between lines", FONT_SIZE_LARGE, 3, paddingLabelsY, linePaddingLabelsX)
+luis.createElement(LYR_BG, "NumberSpinner", linePadSpinner)
+luis.createElement(LYR_BG, "Label", linePaddingLabel)
 
 -- ============================================================================
 -- SOUND SLIDERS
@@ -247,6 +314,13 @@ local function applySettings()
             green = green,
             blue = blue,
             alpha = opacitySlider.value
+        },
+        padding = {
+            width_inner = padWInnerSpinner.value,
+            height_inner = padHInnerSpinner.value,
+            width = padWSpinner.value,
+            height = padHSpinner.value,
+            line_pad = linePadSpinner.value
         }
     }
     for key, value in pairs(runningConfig) do -- override defaults with config
@@ -318,10 +392,21 @@ on("config", function(config)
     backgroundColorPicker.color = {config.background.red, config.background.green, config.background.blue,
                                    config.background.alpha}
     opacitySlider.value = config.background.alpha
-    musicVolumeSlider.value = config.audio.music
-    sfxVolumeSlider.value = config.audio.sound
+
     customFontCheckbox:setValue(config.font.custom_font)
     noVnFontCheckbox:setValue(config.font.override_font)
+
+    musicVolumeSlider.value = config.audio.music
+    sfxVolumeSlider.value = config.audio.sound
+
+    padWInnerSpinner.value = config.padding.width_inner
+    padHInnerSpinner.value = config.padding.height_inner
+
+    padWSpinner.value = config.padding.width
+    padHSpinner.value = config.padding.height
+
+    linePadSpinner.value = config.padding.line_pad
+
     runningConfig = config
 end)
 

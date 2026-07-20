@@ -33,8 +33,6 @@ function load_config()
     for key, value in pairs(new_config) do -- override defaults with config
         _.extend(config[key], new_config[key])
     end
-    pprint(new_config)
-    pprint(config)
     return config
 end
 
