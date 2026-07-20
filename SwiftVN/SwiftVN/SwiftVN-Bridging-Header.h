@@ -1,6 +1,6 @@
 //
-//  SwiftHeart-Bridging-Header.h
-//  SwiftHeart
+//  SwiftVN-Bridging-Header.h
+//  SwiftVN
 //
 //  Exposes Objective-C(++) types to Swift.
 //

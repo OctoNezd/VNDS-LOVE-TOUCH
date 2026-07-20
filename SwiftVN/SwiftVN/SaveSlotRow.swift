@@ -1,6 +1,6 @@
 //
 //  SaveSlotRow.swift
-//  SwiftHeart
+//  SwiftVN
 //
 
 import SwiftUI

@@ -1,6 +1,6 @@
 //
 //  ContentView.swift
-//  SwiftHeart
+//  SwiftVN
 //
 //  Books-style game picker:
 //    - Scrollable grid of horizontal game tiles (landscape aspect ratio)
@@ -47,7 +47,7 @@ struct ContentView: View {
             NavigationStack {
                 if games.isEmpty {
                     emptyState
-                        .navigationTitle("SwiftHeart")
+                        .navigationTitle("SwiftVN")
                         .navigationBarTitleDisplayMode(.large)
                         .toolbar { settingsButton }
                 } else {
@@ -65,7 +65,7 @@ struct ContentView: View {
                         .padding(16)
                     }
                     .background(Color(.systemGroupedBackground))
-                    .navigationTitle("SwiftHeart")
+                    .navigationTitle("SwiftVN")
                     .navigationBarTitleDisplayMode(.large)
                     .toolbar { settingsButton }
                 }

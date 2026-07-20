@@ -1,4 +1,4 @@
-is_swiftheart = false
+is_swiftvn = false
 
 local event = require 'event'
 dispatch = event.dispatch
@@ -115,12 +115,12 @@ function love.load(arg)
     else
         print("no arg, using userdocuments")
         lfs.mountCommonPath("userdocuments", root_path, "readwrite")
-        if not arg[1] == "swiftheart" then
+        if not arg[1] == "swiftvn" then
             -- apple moment
             local dummy_contents = lfs.read("dummy.txt")
             print(lfs.write(root_path .. "IOS-FILES-DUMDUM.TXT", dummy_contents))
         else
-            is_swiftheart = true
+            is_swiftvn = true
         end
     end
     love.resize(lg.getWidth(), lg.getHeight())
@@ -129,15 +129,15 @@ function love.load(arg)
 
     -- Parse command line arguments for game directory and save slot
     -- Usage: love . [game_directory] [save_slot]
-    -- When launched from SwiftHeart the arg table looks like:
-    --   arg[1] = "swiftheart"
+    -- When launched from SwiftVN the arg table looks like:
+    --   arg[1] = "swiftvn"
     --   arg[2] = path/to/core.love
     --   arg[3] = "--fused"
     --   arg[4] = game_directory_name
     --   arg[5] = save_slot_number (optional, as string)
     local known_args = {
         nomount = true,
-        swiftheart = true,
+        swiftvn = true,
         ["--fused"] = true
     }
     local game_arg = nil

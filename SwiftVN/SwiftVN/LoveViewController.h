@@ -1,6 +1,6 @@
 //
 //  LoveViewController.h
-//  SwiftHeart
+//  SwiftVN
 //
 //  Objective-C header for the Love2D view controller.
 //  This header uses only Objective-C types so it can be included

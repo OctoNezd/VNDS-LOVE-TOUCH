@@ -1,12 +1,12 @@
 //
-//  SwiftHeartApp.swift
-//  SwiftHeart
+//  SwiftVNApp.swift
+//  SwiftVN
 //
 
 import SwiftUI
 
 @main
-struct SwiftHeartApp: App {
+struct SwiftVNApp: App {
 
     init() {
         // iOS / iPadOS only shows an app's Documents folder in the Files app

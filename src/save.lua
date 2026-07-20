@@ -28,14 +28,14 @@ local function preview_slot(i, fn, save, info)
 end
 
 -- ---------------------------------------------------------------------------
--- Native iOS save/load dialog (SwiftHeart only)
+-- Native iOS save/load dialog (SwiftVN only)
 -- ---------------------------------------------------------------------------
 -- Presents the SwiftUI slot-picker sheet (non-blocking) and calls `callback`
 -- with the chosen slot number (1-based) or nil when the user cancels.
 -- While the sheet is open the game loop continues running normally.
 
 local function native_slot_ui(base_dir, mode, callback)
-    local swiftheart = require("swiftheart")
+    local swiftvn = require("swiftvn")
 
     -- Convert the Love virtual path (/documents/GameName/) to a real
     -- filesystem path using the same substitution as mount.lua.
@@ -47,12 +47,12 @@ local function native_slot_ui(base_dir, mode, callback)
     real_dir = real_dir:gsub("//", "/"):gsub("/$", "")
 
     -- Present the sheet (returns immediately).
-    swiftheart.showSaveDialog(real_dir, mode)
+    swiftvn.showSaveDialog(real_dir, mode)
 
     -- Poll each frame until the user makes a choice.
     local poll_evt
     poll_evt = on("update", function()
-        local result = swiftheart.pollSlotResult()
+        local result = swiftvn.pollSlotResult()
         if result == nil then
             return -- still open, keep polling
         end
@@ -67,7 +67,7 @@ local function native_slot_ui(base_dir, mode, callback)
 end
 
 -- ---------------------------------------------------------------------------
--- Love grid-based slot UI (non-SwiftHeart)
+-- Love grid-based slot UI (non-SwiftVN)
 -- ---------------------------------------------------------------------------
 
 local function slot_ui(base_dir, existing_slot, new_slot, closable)
@@ -111,7 +111,7 @@ on("save_slot", function()
     end
     local base_dir = interpreter.base_dir
 
-    if is_swiftheart then
+    if is_swiftvn then
         -- Native iOS dialog: present sheet, then write when user picks a slot.
         native_slot_ui(base_dir, "save", function(chosen)
             if chosen == nil then
@@ -134,7 +134,7 @@ on("save_slot", function()
         return
     end
 
-    -- Non-SwiftHeart: use the Love grid UI.
+    -- Non-SwiftVN: use the Love grid UI.
     local function write_slot(self)
         local save_table = {
             interpreter = script.save(interpreter),
@@ -167,7 +167,7 @@ on("load_slot", function(base_dir, closable, novel_name)
     end
     novel_name = novel_name or ""
 
-    if is_swiftheart then
+    if is_swiftvn then
         -- Native iOS dialog: present sheet, then load when user picks a slot.
         native_slot_ui(base_dir, "load", function(chosen)
             if chosen == nil then
@@ -191,7 +191,7 @@ on("load_slot", function(base_dir, closable, novel_name)
         return
     end
 
-    -- Non-SwiftHeart: use the Love grid UI.
+    -- Non-SwiftVN: use the Love grid UI.
     slot_ui(base_dir, function(self)
         interpreter = script.load(base_dir, lfs.read, self.data.save.interpreter, novel_name)
         dispatch("restore", self.data.save)

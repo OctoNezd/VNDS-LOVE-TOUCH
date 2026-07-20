@@ -1,6 +1,6 @@
 //
 //  LoveViewController.mm
-//  SwiftHeart
+//  SwiftVN
 //
 //  Runs a Love2D game inside a UIViewController.
 //
@@ -31,8 +31,8 @@
 #import "LoveViewController.h"
 
 // C functions implemented in SlotBridge.swift via @_silgen_name.
-extern "C" void    swiftheart_request_slot(const char *dirPath, bool isSave);
-extern "C" bool    swiftheart_poll_slot_result(int32_t *outSlot);
+extern "C" void    swiftvn_request_slot(const char *dirPath, bool isSave);
+extern "C" bool    swiftvn_poll_slot_result(int32_t *outSlot);
 
 #include "common/version.h"
 #include "common/runtime.h"
@@ -152,28 +152,28 @@ static NSInteger showNativeAlert(NSString *title,
 }
 
 // ---------------------------------------------------------------------------
-// Lua "swiftheart" module
+// Lua "swiftvn" module
 // ---------------------------------------------------------------------------
 //
-// Exposed to Lua as the global table `swiftheart` (registered during Love
-// boot via luaopen_swiftheart).
+// Exposed to Lua as the global table `swiftvn` (registered during Love
+// boot via luaopen_swiftvn).
 //
 // API
 // ───
-//   swiftheart.showSaveDialog(dirPath, mode)
+//   swiftvn.showSaveDialog(dirPath, mode)
 //
 //     dirPath – absolute filesystem path to the game directory
 //     mode    – "save" or "load"
 //
 //     Presents the native SwiftUI slot-picker sheet (non-blocking).
-//     Poll swiftheart.pollSlotResult() each frame until it returns non-nil.
+//     Poll swiftvn.pollSlotResult() each frame until it returns non-nil.
 //
-//   swiftheart.pollSlotResult() -> number | false | nil
+//   swiftvn.pollSlotResult() -> number | false | nil
 //
 //     Returns the chosen 1-based slot number when the user has picked,
 //     false if the user cancelled, or nil if the sheet is still open.
 //
-//   swiftheart.showPauseMenu() -> string | nil
+//   swiftvn.showPauseMenu() -> string | nil
 //
 //     Shows the pause menu (blocking UIAlertController).  Returns one of:
 //       "continue", "save", "load", "settings", "mainmenu"
@@ -189,15 +189,15 @@ static int l_showSaveDialog(lua_State *L)
     bool isSave = strcmp(mode_cstr, "save") == 0;
 
     // Present the SwiftUI sheet (non-blocking).
-    swiftheart_request_slot(dir_cstr, isSave);
+    swiftvn_request_slot(dir_cstr, isSave);
     return 0;
 }
 
-// swiftheart.pollSlotResult() -> number (slot) | false (cancelled) | nil (pending)
+// swiftvn.pollSlotResult() -> number (slot) | false (cancelled) | nil (pending)
 static int l_pollSlotResult(lua_State *L)
 {
     int32_t chosen = 0;
-    if (!swiftheart_poll_slot_result(&chosen)) {
+    if (!swiftvn_poll_slot_result(&chosen)) {
         // Sheet still open
         lua_pushnil(L);
         return 1;
@@ -240,16 +240,16 @@ static int l_showPauseMenu(lua_State *L)
     return 1;
 }
 
-static const luaL_Reg swiftheart_funcs[] = {
+static const luaL_Reg swiftvn_funcs[] = {
     { "showSaveDialog",  l_showSaveDialog  },
     { "pollSlotResult",  l_pollSlotResult  },
     { "showPauseMenu",   l_showPauseMenu   },
     { nullptr, nullptr }
 };
 
-static int luaopen_swiftheart(lua_State *L)
+static int luaopen_swiftvn(lua_State *L)
 {
-    luaL_newlib(L, swiftheart_funcs);
+    luaL_newlib(L, swiftvn_funcs);
     return 1;
 }
 
@@ -282,8 +282,8 @@ static DoneAction runlove(int argc, char **argv, int &retval,
 
     love_preload(L, luaopen_love, "love");
 
-    // Register the swiftheart native module so Lua can require("swiftheart")
-    love_preload(L, luaopen_swiftheart, "swiftheart");
+    // Register the swiftvn native module so Lua can require("swiftvn")
+    love_preload(L, luaopen_swiftvn, "swiftvn");
 
     {
         lua_newtable(L);
@@ -366,11 +366,11 @@ static int loveSDLMain(int /*argc*/, char ** /*argv*/)
     // g_loveRunArgs is the file-scope static set by startLove before this call.
     LoveRunArgs *args = g_loveRunArgs;
 
-    // argv[0] = "swiftheart" (identifies the host app to the Lua game)
+    // argv[0] = "swiftvn" (identifies the host app to the Lua game)
     // argv[1] = path to .love file
     // argv[2] = "--fused"  (skip Love's file-picker UI)
     // argv[3..] = any extra args passed by the caller
-    std::string arg0 = "swiftheart";
+    std::string arg0 = "swiftvn";
     std::string arg1 = args->gamePath;
     std::string arg2 = "--fused";
 

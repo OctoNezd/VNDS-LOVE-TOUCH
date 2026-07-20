@@ -1,6 +1,6 @@
 //
 //  InGameSlotSheet.swift
-//  SwiftHeart
+//  SwiftVN
 //
 //  Presented while a game is running (triggered by Lua via InGameSlotCoordinator).
 //  For "save" mode: all 30 slots are selectable (empty slots can be overwritten).

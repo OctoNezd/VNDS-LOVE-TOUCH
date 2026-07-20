@@ -1,6 +1,6 @@
 //
 //  GameTileView.swift
-//  SwiftHeart
+//  SwiftVN
 //
 //   ┌──────────────────────────────────────────┐
 //   │         background / preview image       │

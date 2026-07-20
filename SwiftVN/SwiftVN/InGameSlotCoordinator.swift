@@ -1,6 +1,6 @@
 //
 //  InGameSlotCoordinator.swift
-//  SwiftHeart
+//  SwiftVN
 //
 //  A singleton ObservableObject that bridges the ObjC/Lua side (which runs on
 //  the main thread inside a nested CFRunLoop) with SwiftUI sheet presentation.
@@ -58,7 +58,7 @@ final class InGameSlotCoordinator: ObservableObject {
     // MARK: - Called from SlotBridge.swift (non-blocking)
 
     /// Present the sheet and return immediately.  Poll isDone / pendingResult
-    /// from the game loop via swiftheart_poll_slot_result().
+    /// from the game loop via swiftvn_poll_slot_result().
     func showSheet(dirPath: String, isSave: Bool) {
         let dirURL = URL(fileURLWithPath: dirPath)
 

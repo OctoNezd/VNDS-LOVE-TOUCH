@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		055608F8300E03AF000AC2D0 /* vnds.love in Resources */ = {isa = PBXBuildFile; fileRef = 055608F7300E03AF000AC2D0 /* vnds.love */; };
+		059C5DB4300E06A30000C919 /* vnds.love in Resources */ = {isa = PBXBuildFile; fileRef = 059C5DB3300E06A30000C919 /* vnds.love */; };
 		05SH0001300D0001000AC2D0 /* LoveViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 05SH0002300D0001000AC2D0 /* LoveViewController.mm */; };
 		05SH0003300D0001000AC2D0 /* liblove.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 05SH0010300D0001000AC2D0 /* liblove.a */; };
 		05SH0004300D0001000AC2D0 /* SDL3.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 05SH0011300D0001000AC2D0 /* SDL3.xcframework */; };
@@ -58,9 +58,10 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		05560893300D183A000AC2D0 /* SwiftHeart.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwiftHeart.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		05560893300D183A000AC2D0 /* SwiftVN.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwiftVN.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		055608F7300E03AF000AC2D0 /* vnds.love */ = {isa = PBXFileReference; lastKnownFileType = file; name = vnds.love; path = "../VNDS-LOVE/build/vnds.love"; sourceTree = "<group>"; };
-		05SH0002300D0001000AC2D0 /* LoveViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = LoveViewController.mm; path = SwiftHeart/LoveViewController.mm; sourceTree = "<group>"; };
+		059C5DB3300E06A30000C919 /* vnds.love */ = {isa = PBXFileReference; lastKnownFileType = file; name = vnds.love; path = "../VNDS-LOVE/build/vnds.love"; sourceTree = "<group>"; };
+		05SH0002300D0001000AC2D0 /* LoveViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = LoveViewController.mm; path = SwiftVN/LoveViewController.mm; sourceTree = "<group>"; };
 		05SH0011300D0001000AC2D0 /* SDL3.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = SDL3.xcframework; path = ../love/platform/xcode/shared/Frameworks/SDL3.xcframework; sourceTree = SOURCE_ROOT; };
 		05SH0012300D0001000AC2D0 /* OpenAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenAL.framework; path = System/Library/Frameworks/OpenAL.framework; sourceTree = SDKROOT; };
 		05SH0013300D0001000AC2D0 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
@@ -78,24 +79,24 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		0556089F300D183B000AC2D0 /* Exceptions for "SwiftHeart" folder in "SwiftHeart" target */ = {
+		0556089F300D183B000AC2D0 /* Exceptions for "SwiftVN" folder in "SwiftVN" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				core.love,
 				Info.plist,
 				LoveViewController.mm,
 			);
-			target = 05560892300D183A000AC2D0 /* SwiftHeart */;
+			target = 05560892300D183A000AC2D0 /* SwiftVN */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		05560895300D183A000AC2D0 /* SwiftHeart */ = {
+		05560895300D183A000AC2D0 /* SwiftVN */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				0556089F300D183B000AC2D0 /* Exceptions for "SwiftHeart" folder in "SwiftHeart" target */,
+				0556089F300D183B000AC2D0 /* Exceptions for "SwiftVN" folder in "SwiftVN" target */,
 			);
-			path = SwiftHeart;
+			path = SwiftVN;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -129,7 +130,8 @@
 			isa = PBXGroup;
 			children = (
 				055608F7300E03AF000AC2D0 /* vnds.love */,
-				05560895300D183A000AC2D0 /* SwiftHeart */,
+				059C5DB3300E06A30000C919 /* vnds.love */,
+				05560895300D183A000AC2D0 /* SwiftVN */,
 				05SH0021300D0001000AC2D0 /* liblove.xcodeproj */,
 				05SH0025300D0001000AC2D0 /* Frameworks */,
 				05560894300D183A000AC2D0 /* Products */,
@@ -140,7 +142,7 @@
 		05560894300D183A000AC2D0 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				05560893300D183A000AC2D0 /* SwiftHeart.app */,
+				05560893300D183A000AC2D0 /* SwiftVN.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -184,9 +186,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		05560892300D183A000AC2D0 /* SwiftHeart */ = {
+		05560892300D183A000AC2D0 /* SwiftVN */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 055608A0300D183B000AC2D0 /* Build configuration list for PBXNativeTarget "SwiftHeart" */;
+			buildConfigurationList = 055608A0300D183B000AC2D0 /* Build configuration list for PBXNativeTarget "SwiftVN" */;
 			buildPhases = (
 				0556088F300D183A000AC2D0 /* Sources */,
 				05560890300D183A000AC2D0 /* Frameworks */,
@@ -199,13 +201,13 @@
 				05SH0026300D0001000AC2D0 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				05560895300D183A000AC2D0 /* SwiftHeart */,
+				05560895300D183A000AC2D0 /* SwiftVN */,
 			);
-			name = SwiftHeart;
+			name = SwiftVN;
 			packageProductDependencies = (
 			);
-			productName = SwiftHeart;
-			productReference = 05560893300D183A000AC2D0 /* SwiftHeart.app */;
+			productName = SwiftVN;
+			productReference = 05560893300D183A000AC2D0 /* SwiftVN.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -223,7 +225,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 0556088E300D183A000AC2D0 /* Build configuration list for PBXProject "SwiftHeart" */;
+			buildConfigurationList = 0556088E300D183A000AC2D0 /* Build configuration list for PBXProject "SwiftVN" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -243,7 +245,7 @@
 			);
 			projectRoot = "";
 			targets = (
-				05560892300D183A000AC2D0 /* SwiftHeart */,
+				05560892300D183A000AC2D0 /* SwiftVN */,
 			);
 		};
 /* End PBXProject section */
@@ -263,7 +265,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				055608F8300E03AF000AC2D0 /* vnds.love in Resources */,
+				059C5DB4300E06A30000C919 /* vnds.love in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -310,7 +312,10 @@
 					"$(PROJECT_DIR)/../love/src/modules",
 					"$(PROJECT_DIR)/../love/platform/xcode/shared/Frameworks/SDL3.xcframework/ios-arm64/SDL3.framework/Headers",
 				);
-				INFOPLIST_FILE = SwiftHeart/Info.plist;
+				INFOPLIST_FILE = SwiftVN/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = SwiftVN;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.adventure-games";
+				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -326,13 +331,13 @@
 				);
 				MARKETING_VERSION = 1.0;
 				OBJCXX_LANGUAGE_STANDARD = "c++17";
-				PRODUCT_BUNDLE_IDENTIFIER = me.octonezd.SwiftHeart;
+				PRODUCT_BUNDLE_IDENTIFIER = me.octonezd.SwiftVN;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "SwiftHeart/SwiftHeart-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "SwiftVN/SwiftVN-Bridging-Header.h";
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -360,7 +365,10 @@
 					"$(PROJECT_DIR)/../love/src/modules",
 					"$(PROJECT_DIR)/../love/platform/xcode/shared/Frameworks/SDL3.xcframework/ios-arm64/SDL3.framework/Headers",
 				);
-				INFOPLIST_FILE = SwiftHeart/Info.plist;
+				INFOPLIST_FILE = SwiftVN/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = SwiftVN;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.adventure-games";
+				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -376,13 +384,13 @@
 				);
 				MARKETING_VERSION = 1.0;
 				OBJCXX_LANGUAGE_STANDARD = "c++17";
-				PRODUCT_BUNDLE_IDENTIFIER = me.octonezd.SwiftHeart;
+				PRODUCT_BUNDLE_IDENTIFIER = me.octonezd.SwiftVN;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "SwiftHeart/SwiftHeart-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "SwiftVN/SwiftVN-Bridging-Header.h";
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -511,7 +519,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		0556088E300D183A000AC2D0 /* Build configuration list for PBXProject "SwiftHeart" */ = {
+		0556088E300D183A000AC2D0 /* Build configuration list for PBXProject "SwiftVN" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				055608A3300D183B000AC2D0 /* Debug */,
@@ -520,7 +528,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		055608A0300D183B000AC2D0 /* Build configuration list for PBXNativeTarget "SwiftHeart" */ = {
+		055608A0300D183B000AC2D0 /* Build configuration list for PBXNativeTarget "SwiftVN" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				055608A1300D183B000AC2D0 /* Debug */,

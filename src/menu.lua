@@ -11,10 +11,10 @@ on("input", function(input)
         love.timer.sleep(0.005)
 
         local res
-        if is_swiftheart then
+        if is_swiftvn then
             -- Use the native iOS action sheet instead of Love's message box.
-            local swiftheart = require("swiftheart")
-            local choice = swiftheart.showPauseMenu()
+            local swiftvn = require("swiftvn")
+            local choice = swiftvn.showPauseMenu()
             if choice == "continue" then
                 res = 1
             elseif choice == "save" then
@@ -46,7 +46,7 @@ on("input", function(input)
         elseif res == 4 then
             dispatch("start_cfgui")
         elseif res == 5 then
-            if is_swiftheart then
+            if is_swiftvn then
                 love.event.quit()
             else
                 love.event.quit("restart")
