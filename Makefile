@@ -50,8 +50,11 @@ build: compile
 	mkdir -p VNDS-LOVE/build
 	cd vnds;zip -r ../VNDS-LOVE/build/vnds.love  .
 
-install-container: build
-	cp VNDS-LOVE/build/vnds.love ~/Library/Containers/28149278-D215-439E-A9ED-C293C0F93DDE/Data/Documents/core.love
+build-swiftvn:
+	$(MAKE) -C SwiftVN build-onmac
 
-run-onmac: install-container
-	$(MAKE) -C SwiftVN run-onmac
+open-simdir:
+	$(MAKE) -C SwiftVN open-simdir
+
+run-ipadsim:
+	$(MAKE) -C SwiftVN run-ipadsim

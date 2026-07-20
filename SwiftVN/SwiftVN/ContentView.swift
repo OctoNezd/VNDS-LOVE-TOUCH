@@ -49,7 +49,7 @@ struct ContentView: View {
                     emptyState
                         .navigationTitle("SwiftVN")
                         .navigationBarTitleDisplayMode(.large)
-                        .toolbar { settingsButton }
+                        .toolbar { toolbarButtons }
                 } else {
                     ScrollView {
                         // .adaptive gives 1 column on narrow phones, 2+ on iPad
@@ -67,7 +67,7 @@ struct ContentView: View {
                     .background(Color(.systemGroupedBackground))
                     .navigationTitle("SwiftVN")
                     .navigationBarTitleDisplayMode(.large)
-                    .toolbar { settingsButton }
+                    .toolbar { toolbarButtons }
                 }
             }
             .onAppear { loadGames() }
@@ -84,7 +84,14 @@ struct ContentView: View {
     }
 
     @ToolbarContentBuilder
-    private var settingsButton: some ToolbarContent {
+    private var toolbarButtons: some ToolbarContent {
+        ToolbarItem(placement: .navigationBarLeading) {
+            Button {
+                loadGames()
+            } label: {
+                Image(systemName: "arrow.clockwise")
+            }
+        }
         ToolbarItem(placement: .navigationBarTrailing) {
             Button { showSettings = true } label: {
                 Image(systemName: "gearshape")
