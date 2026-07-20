@@ -1,4 +1,5 @@
 .PHONY: all clean compile run test build icons help
+SWIFT_VN_DEVICE_ID ?= iPad (A16)
 
 # Default target
 all: compile
@@ -54,7 +55,10 @@ build-swiftvn:
 	$(MAKE) -C SwiftVN build-onmac
 
 open-simdir:
-	$(MAKE) -C SwiftVN open-simdir
+	$(MAKE) -C SwiftVN DEVICE_ID="${SWIFT_VN_DEVICE_ID}" open-simdir
 
-run-ipadsim: build
-	$(MAKE) -C SwiftVN run-ipadsim
+run-sim: build
+	$(MAKE) -C SwiftVN DEVICE_ID="${SWIFT_VN_DEVICE_ID}" run-sim
+
+copy-sample-sim:
+	$(MAKE) -C SwiftVN DEVICE_ID="${SWIFT_VN_DEVICE_ID}" copy-samples
