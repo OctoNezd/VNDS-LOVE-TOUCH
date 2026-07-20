@@ -224,7 +224,7 @@ on("text", function(self)
     if #lastlines > 3 then
         table.remove(lastlines, 1)
     end
-    local add_lines = word_wrap(self.text, getWidth() - 2 * pad)
+    local add_lines = word_wrap(self.text, getWidth() - 3 * pad)
     for _, line in ipairs(add_lines) do
         table.insert(backlog, line)
     end
@@ -352,10 +352,10 @@ end)
 on("draw_text", function()
     if #buffer > 0 then
         lg.setFont(love.text_font)
-        local w = lg.getWidth() - 2 * pad
+        local w = getWidth() - 2 * pad
         local h = pad + (love.text_font:getHeight() + pad) * calculate_lines()
-        local x = pad
-        local y = getHeight() - h - pad
+        local x = getSafeX() + pad
+        local y = getSafeY() + getHeight() - h - pad
         lg.setColor(bg_color_red, bg_color_green, bg_color_blue, bg_color_alpha)
         lg.rectangle("fill", x, y, w, h)
         lg.setColor(1, 1, 1)
@@ -404,7 +404,7 @@ on("draw_text", function()
             -- Only draw if there's something to show
             if #revealed_line > 0 then
                 if revealed_line[2] ~= '' then
-                    lg.print(revealed_line, 2 * pad, y_pos)
+                    lg.print(revealed_line, x + pad, y_pos)
                 end
             end
 

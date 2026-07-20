@@ -19,7 +19,10 @@ open-ipadsim:
 explore-ipadsim:
 	open $(shell xcrun simctl get_app_container ${ipadid} me.octonezd.SwiftVN data)
 
-run-ipadsim: build-ipadsim install-ipadsim open-ipadsim
+terminate-ipadsim:
+	xcrun simctl terminate ${ipadid} me.octonezd.SwiftVN
+
+run-ipadsim: terminate-ipadsim build-ipadsim install-ipadsim open-ipadsim
 	exit 0
 
 
