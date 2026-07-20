@@ -56,5 +56,5 @@ build-swiftvn:
 open-simdir:
 	$(MAKE) -C SwiftVN open-simdir
 
-run-ipadsim:
+run-ipadsim: build
 	$(MAKE) -C SwiftVN run-ipadsim

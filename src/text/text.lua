@@ -12,19 +12,6 @@ local text_reveal_speed = 0.03 -- Time between each character (in seconds)
 local text_reveal_timer = nil
 local text_fully_revealed = true
 
-local function getHeight()
-    local SAFE_X, SAFE_Y, SAFE_WIDTH, SAFE_HEIGHT = love.window.getSafeArea()
-    -- we dont need all that bottom space that is reserved for nav
-    -- cuz we just display text there
-    SAFE_HEIGHT = love.graphics.getHeight() - SAFE_X * 2
-    return SAFE_HEIGHT
-end
-
-local function getWidth()
-    local SAFE_X, SAFE_Y, SAFE_WIDTH, SAFE_HEIGHT = love.window.getSafeArea()
-    return SAFE_WIDTH
-end
-
 local function getSafeX()
     local SAFE_X, SAFE_Y, SAFE_WIDTH, SAFE_HEIGHT = love.window.getSafeArea()
     return SAFE_X
@@ -32,7 +19,22 @@ end
 
 local function getSafeY()
     local SAFE_X, SAFE_Y, SAFE_WIDTH, SAFE_HEIGHT = love.window.getSafeArea()
+    if SAFE_Y == 0 then
+        return pad
+    end
     return SAFE_Y
+end
+
+local function getWidth()
+    local SAFE_X, SAFE_Y, SAFE_WIDTH, SAFE_HEIGHT = love.window.getSafeArea()
+    return SAFE_WIDTH
+end
+
+local function getHeight()
+    -- we dont need all that bottom space that is reserved for nav
+    -- cuz we just display text there
+    local SAFE_HEIGHT = love.graphics.getHeight() - getSafeY() * 2
+    return SAFE_HEIGHT
 end
 
 local function calculate_lines()
