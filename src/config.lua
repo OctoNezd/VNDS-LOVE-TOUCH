@@ -1,9 +1,9 @@
-local LIP = require "lib.LIP"
-
+local json = require("lib.json")
+local config_filename = "conf.json"
 local config = {
     audio = {
-        music = 100,
-        sound = 100
+        music = 1,
+        sound = 1
     },
     font = {
         override_font = false,
@@ -25,10 +25,16 @@ local config = {
 }
 
 function load_config()
-    local new_config = LIP.load("config.ini")
+    local confjson = love.filesystem.openFile(config_filename, 'r')
+    local new_config = {}
+    if confjson ~= nil then
+        new_config = json.decode(confjson:read())
+    end
     for key, value in pairs(new_config) do -- override defaults with config
         _.extend(config[key], new_config[key])
     end
+    pprint(new_config)
+    pprint(config)
     return config
 end
 
@@ -38,5 +44,6 @@ end)
 
 on("save_config", function(new_config)
     config = new_config
-    LIP.save('config.ini', config)
+    local confjson = love.filesystem.openFile(config_filename, 'w')
+    confjson:write(json.encode(new_config))
 end)

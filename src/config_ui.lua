@@ -143,21 +143,79 @@ luis.createElement(LYR_BG, "Label", noVnFontLabel)
 -- ============================================================================
 
 -- Music Volume Slider
+local function updateVolume(vol)
+    if currentMusic == nil then
+        return
+    end
+    currentMusic:setVolume(vol)
+end
 local musicVolumeSlider = luis.newSlider(0, -- min value
-100, -- max value
-100, -- default value
-pickerWidth + ALPHA_SLIDER_Y_OFFSET, 1, doNothing, COLORPICKER_Y_POSITION, leftColumnX)
+1, -- max value
+1, -- default value
+pickerWidth + ALPHA_SLIDER_Y_OFFSET, 1, updateVolume, COLORPICKER_Y_POSITION, leftColumnX)
 local musicVolumeLabel = luis.newLabel("Music volume", ALPHA_LABEL_Y_OFFSET + 2, 1, COLORPICKER_LABEL_Y_OFFSET,
     leftColumnX)
 
+local musicPlaying = false
+local musicPlayingText = '⏸'
+local musicNotPlayingText = "▶"
+local function playPauseMusic()
+    musicPlaying = not musicPlaying
+    if musicPlaying then
+        dispatch("music", {
+            path = "Space Jazz.mp3"
+        })
+        playPauseMusic.text = musicPlayingText
+    else
+        dispatch("music", {})
+        playPauseMusic.text = musicNotPlayingText
+    end
+end
+local emojiFont = love.graphics.newFont("NotoEmoji-Regular.ttf", FONT_SIZE_LARGE)
+-- Place button right after the slider, spanning the same rows as the label + slider
+local playButtonCol = leftColumnX + pickerWidth + ALPHA_SLIDER_Y_OFFSET
+local playButtonHeight = COLORPICKER_Y_POSITION - COLORPICKER_LABEL_Y_OFFSET + 4
+
+playPauseMusic = luis.newButton("▶", 4, playButtonHeight, doNothing, playPauseMusic, COLORPICKER_LABEL_Y_OFFSET - 2,
+    playButtonCol, {
+        color = {0, 0, 0, 0},
+        hoverColor = {0, 0, 0, 0},
+        pressedColor = {0, 0, 0, 0},
+        textColor = {1, 1, 1, 1},
+        align = "center",
+        cornerRadius = 0,
+        elevation = 0,
+        elevationHover = 0,
+        elevationPressed = 0,
+        transitionDuration = 0.25,
+        text = {
+            font = emojiFont
+        }
+    })
+-- Override draw to skip background/shadow, only render the emoji text
+playPauseMusic.defaultDraw = function(self)
+    local textFont = emojiFont
+    love.graphics.setColor(self.theme.textColor)
+    love.graphics.setFont(textFont)
+    love.graphics.printf(self.text, self.position.x, self.position.y + (self.height - textFont:getHeight()) / 2,
+        self.width, self.theme.align)
+end
+
 luis.createElement(LYR_SOUNDS, "Slider", musicVolumeSlider)
 luis.createElement(LYR_SOUNDS, "Label", musicVolumeLabel)
+luis.createElement(LYR_SOUNDS, "Button", playPauseMusic)
 
 -- SFX Volume Slider
-local sfxVolumeSlider = luis.newSlider(0, -- min value
-100, -- max value
-100, -- default value
-pickerWidth + ALPHA_SLIDER_Y_OFFSET, 1, doNothing, ALPHA_LABEL_Y_OFFSET + 2, leftColumnX)
+local function playBonk()
+    dispatch("sound", {
+        path = "bongo-hit.mp3"
+    })
+end
+
+sfxVolumeSlider = luis.newSlider(0, -- min value
+1, -- max value
+0.4, -- default value
+pickerWidth + ALPHA_SLIDER_Y_OFFSET, 1, playBonk, ALPHA_LABEL_Y_OFFSET + 2, leftColumnX)
 local sfxVolumeLabel = luis.newLabel("SFX volume", ALPHA_LABEL_Y_OFFSET + 2, 1, ALPHA_LABEL_Y_OFFSET, leftColumnX)
 
 luis.createElement(LYR_SOUNDS, "Slider", sfxVolumeSlider)
@@ -167,12 +225,18 @@ luis.createElement(LYR_SOUNDS, "Label", sfxVolumeLabel)
 -- BUTTON ACTIONS
 -- ============================================================================
 
+local function cancelSettings()
+    configui_active = false
+    dont_render_game = false
+    dispatch("music", {})
+end
+
 local function applySettings()
     local red, green, blue = unpack(backgroundColorPicker.color)
     local newConfig = {
         audio = {
-            music = math.floor(musicVolumeSlider.value),
-            sound = math.floor(sfxVolumeSlider.value)
+            music = musicVolumeSlider.value,
+            sound = sfxVolumeSlider.value
         },
         font = {
             custom_font = customFontCheckbox.value,
@@ -192,15 +256,7 @@ local function applySettings()
     end
     dispatch("config", runningConfig)
     dispatch("save_config", runningConfig)
-    Timer.after(0.1, function()
-        configui_active = false
-        dont_render_game = false
-    end)
-end
-
-local function cancelSettings()
-    configui_active = false
-    dont_render_game = false
+    Timer.after(0.1, cancelSettings)
 end
 
 -- ============================================================================

@@ -97,7 +97,7 @@ function setup_padding_vars(config)
     pad_w = default_pad + config.padding.width
     pad_h_inner = default_pad + config.padding.height_inner
     pad_w_inner = default_pad + config.padding.width_inner
-    linepad = default_linepad + config.padding.line
+    linepad = default_linepad + config.padding.line_pad
 end
 
 local bg_color_red = 0
