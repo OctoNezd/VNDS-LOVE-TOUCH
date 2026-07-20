@@ -25,9 +25,7 @@ struct ContentView: View {
     @ObservedObject private var slotCoordinator = InGameSlotCoordinator.shared
 
     private var coreLovePath: String {
-        FileManager.default
-            .urls(for: .documentDirectory, in: .userDomainMask)[0]
-            .appendingPathComponent("core.love").path
+        Bundle.main.path(forResource: "vnds", ofType: "love") ?? ""
     }
 
     private var documentsURL: URL {
@@ -109,11 +107,6 @@ struct ContentView: View {
                 .foregroundColor(.secondary)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 32)
-            if !FileManager.default.fileExists(atPath: coreLovePath) {
-                Text("Also place core.love in Documents.")
-                    .font(.caption)
-                    .foregroundColor(.orange)
-            }
         }
         .padding()
         .frame(maxWidth: .infinity, maxHeight: .infinity)

@@ -13,6 +13,9 @@ local text_fully_revealed = true
 
 local function getHeight()
     local SAFE_X, SAFE_Y, SAFE_WIDTH, SAFE_HEIGHT = love.window.getSafeArea()
+    -- we dont need all that bottom space that is reserved for nav
+    -- cuz we just display text there
+    SAFE_HEIGHT = love.graphics.getHeight() - SAFE_X * 2
     return SAFE_HEIGHT
 end
 
