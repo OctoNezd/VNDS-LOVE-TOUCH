@@ -62,7 +62,8 @@ function utf8_clean(str)
                 local byte2 = str:byte(i + 1)
                 local byte3 = str:byte(i + 2)
                 local byte4 = str:byte(i + 3)
-                if byte2 >= 0x80 and byte2 <= 0xBF and byte3 >= 0x80 and byte3 <= 0xBF and byte4 >= 0x80 and byte4 <= 0xBF then
+                if byte2 >= 0x80 and byte2 <= 0xBF and byte3 >= 0x80 and byte3 <= 0xBF and byte4 >= 0x80 and byte4 <=
+                    0xBF then
                     char_len = 4
                     valid = true
                 end
@@ -85,7 +86,9 @@ end
 function get(t, ...)
     for _, k in ipairs({...}) do
         t = t[k]
-        if not t then return nil end
+        if not t then
+            return nil
+        end
     end
     return t
 end
@@ -107,4 +110,16 @@ function deepcopy(orig) -- http://lua-users.org/wiki/CopyTable
         copy = orig
     end
     return copy
+end
+
+-- Source - https://stackoverflow.com/a/66699630
+-- Posted by Roque, modified by community. See post 'Timeline' for change history
+-- Retrieved 2026-07-20, License - CC BY-SA 4.0
+-- in some helper module
+function utils_Set(list)
+    local set = {}
+    for _, l in ipairs(list) do
+        set[l] = true
+    end
+    return set
 end

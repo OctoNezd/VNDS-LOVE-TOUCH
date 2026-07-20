@@ -1,6 +1,6 @@
 local json = require("lib.json")
 local config_filename = "conf.json"
-local config = {
+local baseLineConfig = {
     audio = {
         music = 1,
         sound = 1
@@ -23,6 +23,7 @@ local config = {
         line_pad = 0
     }
 }
+local config = deepcopy(baseLineConfig)
 
 function load_config()
     local confjson = love.filesystem.openFile(config_filename, 'r')
@@ -44,4 +45,10 @@ on("save_config", function(new_config)
     config = new_config
     local confjson = love.filesystem.openFile(config_filename, 'w')
     confjson:write(json.encode(new_config))
+end)
+
+on("reset_config", function()
+    config = deepcopy(baseLineConfig)
+    dispatch("config", config)
+    dispatch("save_config", config)
 end)

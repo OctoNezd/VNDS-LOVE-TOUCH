@@ -333,14 +333,19 @@ local function applySettings()
     Timer.after(0.1, cancelSettings)
 end
 
+local function resetSettings()
+    dispatch("reset_config")
+end
+
 -- ============================================================================
 -- BUTTONS
 -- ============================================================================
 
-local buttonWidth = gridWidth / 4
+local buttonWidth = gridWidth / 8
 -- Position Apply and Cancel buttons centered within the background
-local applyButtonCol = bgLeft + math.floor((bgWidth / 2 - buttonWidth) / 2)
-local cancelButtonCol = bgLeft + math.floor(bgWidth / 2) + math.floor((bgWidth / 2 - buttonWidth) / 2)
+local applyButtonCol = bgLeft + math.floor((bgWidth / 2 - buttonWidth / 2) / 2)
+local resetButtonCol = applyButtonCol + buttonWidth
+local cancelButtonCol = resetButtonCol + buttonWidth
 
 -- Apply Button
 local applyButton = luis.newButton("Apply", buttonWidth, BUTTON_HEIGHT, applySettings, doNothing,
@@ -348,8 +353,14 @@ local applyButton = luis.newButton("Apply", buttonWidth, BUTTON_HEIGHT, applySet
 luis.createElement(LYR_BG, "Button", applyButton)
 luis.createElement(LYR_SOUNDS, "Button", applyButton)
 
+-- Reset Button
+local resetButton = luis.newButton("Reset", buttonWidth, BUTTON_HEIGHT, resetSettings, doNothing,
+    gridHeight - BUTTON_MARGIN_BOTTOM, resetButtonCol)
+luis.createElement(LYR_BG, "Button", resetButton)
+luis.createElement(LYR_SOUNDS, "Button", resetButton)
+
 -- Cancel Button
-local cancelButton = luis.newButton("Cancel", buttonWidth, BUTTON_HEIGHT, doNothing, cancelSettings,
+local cancelButton = luis.newButton("Cancel", buttonWidth, BUTTON_HEIGHT, cancelSettings, doNothing,
     gridHeight - BUTTON_MARGIN_BOTTOM, cancelButtonCol)
 luis.createElement(LYR_BG, "Button", cancelButton)
 luis.createElement(LYR_SOUNDS, "Button", cancelButton)

@@ -1,7 +1,6 @@
 is_swiftvn = false
 
 local event = require 'event'
-require 'misc'
 dispatch = event.dispatch
 dispatch_often = event.dispatch_often
 on = event.on
