@@ -353,14 +353,14 @@ on("draw_text", function()
     if #buffer > 0 then
         lg.setFont(love.text_font)
         local w = getWidth() - 2 * pad
+        local draw_buffer = _.first(buffer, calculate_lines())
         local h = pad + (love.text_font:getHeight() + pad) * calculate_lines()
         local x = getSafeX() + pad
-        local y = getSafeY() + getHeight() - h - pad
+        local y = (love.graphics.getHeight() - h) / 2
         lg.setColor(bg_color_red, bg_color_green, bg_color_blue, bg_color_alpha)
         lg.rectangle("fill", x, y, w, h)
         lg.setColor(1, 1, 1)
         local y_pos = y + pad
-        local draw_buffer = _.first(buffer, calculate_lines())
 
         -- Track characters revealed so far
         local chars_drawn = 0
