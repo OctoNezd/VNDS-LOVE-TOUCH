@@ -1,6 +1,7 @@
 local colorlib = require("text.text_color")
 local colorify = colorlib.colorify
 local pprint = require("lib.pprint")
+local utf8 = require("utf8")
 
 local buffer = {}
 local backlog = {}
@@ -41,6 +42,21 @@ end
 local override_font = nil
 local custom_font = nil
 
+-- System fonts with CJK (Japanese/Chinese/Korean) glyph coverage,
+-- tried in order on macOS and iOS.
+local cjk_system_fonts = {"NotoSansCJK-Regular.ttc"}
+
+local function make_cjk_fallback(size)
+    for _, path in ipairs(cjk_system_fonts) do
+        local ok, f = pcall(love.graphics.newFont, path, size)
+        if ok and f then
+            print("Using CJK fallback font:", path)
+            return f
+        end
+    end
+    return nil
+end
+
 local function update_font()
     local fonts = {}
     if interpreter and not override_font then
@@ -53,14 +69,22 @@ local function update_font()
         table.insert(fonts, "/documents/custom.ttf")
         table.insert(fonts, "/documents/custom.otf")
     end
+    local primary = nil
     for _, f in pairs(fonts) do
         print("Checking font", f)
         if love.filesystem.exists(f) then
-            love.text_font = lg.newFont(f, 32)
-            return
+            primary = lg.newFont(f, 32)
+            break
         end
     end
-    love.text_font = love.graphics.newFont(32)
+    if not primary then
+        primary = love.graphics.newFont(32)
+    end
+    local cjk = make_cjk_fallback(32)
+    if cjk then
+        primary:setFallbacks(cjk)
+    end
+    love.text_font = primary
 end
 
 local bg_color_red = 0
@@ -95,14 +119,14 @@ on("restore", function()
     end
 end)
 
--- Count total characters in buffer (using string.len for byte-based counting)
+-- Count total characters in buffer (using utf8.len for proper Unicode character counting)
 local function count_buffer_chars()
     local total = 0
     local draw_buffer = _.first(buffer, calculate_lines())
     for _, line in ipairs(draw_buffer) do
         -- Each line is a table with alternating colors and text
         for i = 2, #line, 2 do
-            total = total + string.len(line[i])
+            total = total + utf8.len(line[i])
         end
     end
     return total
@@ -352,17 +376,17 @@ on("draw_text", function()
                 else
                     -- This is text, only show revealed portion
                     local text = line[i]
-                    local text_len = string.len(text)
+                    local text_len = utf8.len(text)
 
                     if text_fully_revealed or chars_drawn + text_len <= text_reveal_progress then
                         -- Show entire text segment
                         table.insert(revealed_line, text)
                         chars_drawn = chars_drawn + text_len
                     elseif chars_drawn < text_reveal_progress then
-                        -- Show partial text segment
+                        -- Show partial text segment (use utf8.offset to avoid splitting multi-byte chars)
                         local chars_to_show = text_reveal_progress - chars_drawn
-                        -- Use string.sub for substring
-                        local partial_text = string.sub(text, 1, chars_to_show)
+                        local byte_end = utf8.offset(text, chars_to_show + 1) - 1
+                        local partial_text = string.sub(text, 1, byte_end)
                         table.insert(revealed_line, partial_text)
                         chars_drawn = text_reveal_progress
                         line_finished = true
